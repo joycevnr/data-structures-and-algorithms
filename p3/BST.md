@@ -114,3 +114,19 @@ Existem duas estratégias principais para visitar todos os nós de uma árvore:
       *   Pós-ordem:   20, 40, 30, 60, 80, 70, 50
 
 
+A altura de uma árvore binária (e de qualquer árvore em geral) é formalmente definida como o comprimento do caminho mais longo da raiz até uma folha. O "comprimento" desse caminho é medido pelo número de arestas que o compõem.
+
+Seguindo essa definição:
+
+Uma árvore com um único nó (a raiz) tem altura 0, pois não há arestas saindo da raiz para uma folha.
+
+Uma árvore vazia (sem nós) tem, por convenção, altura -1.
+
+A altura de um nó específico é o número de arestas no caminho mais longo desse nó até uma folha. A altura da árvore é, portanto, a altura do seu nó raiz.
+
+Relação com Nós e Níveis
+É aqui que a confusão pode se instalar. Embora a altura não seja o número de nós, existe uma relação direta:
+
+Altura baseada em nós: Ocasionalmente, em contextos menos formais ou em algumas publicações mais antigas, a altura pode ser definida como o número de nós no caminho mais longo da raiz até a folha. Nessa convenção, uma árvore de um único nó teria altura 1. No entanto, esta não é a definição padrão adotada na maioria dos livros didáticos e contextos acadêmicos atuais.
+
+Níveis: O conceito de "nível" também está relacionado. O nível da raiz é geralmente definido como 0. Os filhos da raiz estão no nível 1, os netos no nível 2, e assim por diante. Se uma árvore tem altura h (baseada em arestas), ela terá h + 1 níveis (do nível 0 ao nível h). Por exemplo, uma árvore com altura 2 (duas arestas no caminho mais longo) terá nós nos níveis 0, 1 e 2.
