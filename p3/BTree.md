@@ -116,7 +116,48 @@ Promote (Promoção): A chave mediana sobe para o nó pai para servir como separ
 Pergunta 4: Como uma Árvore B se mantém sempre balanceada?
 
 
-Resposta: A Árvore B se mantém balanceada principalmente através da sua propriedade fundamental de que todas as folhas devem estar no mesmo nível. As operações de 
+Resposta: A Árvore B se mantém balanceada principalmente através da sua propriedade fundamental de que todas as folhas devem estar no mesmo nível. As operações de  split (na inserção) e fusão/redistribuição (na remoção) são projetadas para garantir que essa propriedade nunca seja violada. A árvore cresce "para cima" (uma nova raiz é criada quando a antiga sofre split) e encolhe "de cima" (a raiz é removida quando seus filhos se fundem), mantendo assim todas as folhas sempre na mesma profundidade.
 
+Com base no material "Arvore B.pdf" fornecido, as operações básicas em uma **Árvore B** (Pesquisa, Inserção e Remoção) ocorrem da seguinte maneira:
 
-split (na inserção) e fusão/redistribuição (na remoção) são projetadas para garantir que essa propriedade nunca seja violada. A árvore cresce "para cima" (uma nova raiz é criada quando a antiga sofre split) e encolhe "de cima" (a raiz é removida quando seus filhos se fundem), mantendo assim todas as folhas sempre na mesma profundidade.
+### Pesquisa (Busca)
+
+[cite_start]A pesquisa em uma Árvore B é uma generalização da busca em uma árvore binária de busca (BST)[cite: 1009]. [cite_start]O processo se adapta ao fato de que cada nó, também chamado de página, pode conter múltiplas chaves ordenadas[cite: 923, 1011, 930].
+
+O algoritmo funciona assim:
+1.  A busca começa no nó raiz.
+2.  [cite_start]Dentro do nó atual, é feita uma pesquisa (geralmente linear) para verificar se o elemento procurado está entre as chaves do nó[cite: 1012, 1013].
+3.  [cite_start]Se o elemento for encontrado, a busca termina, retornando o nó e a posição da chave nele[cite: 1019].
+4.  Se o elemento não for encontrado no nó atual, o algoritmo determina qual filho seguir. [cite_start]Ele usa as chaves ordenadas como separadores para decidir a sub-árvore correta[cite: 1014, 930]. [cite_start]Por exemplo, para encontrar um valor `V`, o algoritmo desce para o filho que está entre as chaves `x1` e `x2`, onde `x1 < V < x2`[cite: 1015].
+5.  [cite_start]O processo se repete recursivamente até que o elemento seja encontrado ou até que se chegue a um nó folha sem o elemento, indicando que ele não está na árvore[cite: 1051].
+
+### Inserção
+
+[cite_start]As inserções em uma Árvore B acontecem sempre nos nós folha[cite: 1065]. [cite_start]O objetivo é manter a árvore balanceada, garantindo que todas as folhas permaneçam no mesmo nível[cite: 921, 928].
+
+O algoritmo de inserção segue estes passos:
+1.  [cite_start]Primeiro, o algoritmo localiza o nó folha apropriado para a inserção do novo elemento, usando um procedimento de busca[cite: 1066].
+2.  [cite_start]**Caso 1: O nó folha não está cheio.** Se o nó folha tem espaço livre, o novo elemento é simplesmente inserido em sua posição correta, mantendo a ordem das chaves[cite: 1067].
+3.  [cite_start]**Caso 2: O nó folha está cheio.** Se o nó não tem espaço, ocorre um processo de divisão chamado **split**[cite: 1069].
+    * [cite_start]A chave mediana do conjunto (chaves existentes + nova chave) é selecionada[cite: 1075].
+    * [cite_start]Essa chave mediana é movida para o nó pai, um processo chamado **promote** (promoção)[cite: 1070].
+    * [cite_start]O nó original é dividido em dois novos nós: um com as chaves menores que a mediana e outro com as chaves maiores[cite: 1076, 1077].
+    * [cite_start]Se a promoção da chave mediana fizer com que o nó pai também fique cheio, o processo de split e promote se repete recursivamente, subindo na árvore[cite: 1071]. [cite_start]Se o split ocorrer na raiz, uma nova raiz é criada, e a altura da árvore aumenta[cite: 1080].
+
+### Remoção
+
+[cite_start]A remoção é análoga à inserção, mas com mais casos a serem considerados, pois a chave pode ser removida de qualquer nó (folha ou interno)[cite: 1148, 1149]. [cite_start]O principal desafio é garantir que, após a remoção, nenhum nó viole a regra do número mínimo de chaves (condição de **underflow**)[cite: 1158].
+
+O processo geral depende de onde a chave está:
+
+1.  **Remoção em um Nó Folha:**
+    * [cite_start]A chave é removida do nó[cite: 1164].
+    * Se o nó ainda tiver o número mínimo de chaves, a operação termina.
+    * [cite_start]Se a remoção causar **underflow**, a árvore precisa ser rebalanceada[cite: 1165]. Isso é feito de duas maneiras:
+        * [cite_start]**Redistribuição:** Se um nó irmão adjacente tiver mais chaves que o mínimo, uma chave do irmão é movida para o pai, e uma chave do pai é movida para o nó com underflow[cite: 1165].
+        * [cite_start]**Concatenação (Fusão):** Se os nós irmãos também estiverem no limite mínimo de chaves, o nó com underflow é fundido com um de seus irmãos[cite: 1165]. [cite_start]Uma chave separadora do nó pai desce para se juntar ao novo nó fundido[cite: 1170]. Essa operação no pai pode, por sua vez, causar um underflow nele, propagando o problema para cima.
+
+2.  **Remoção em um Nó Interno:**
+    * [cite_start]A remoção de uma chave em um nó interno é mais complexa porque essa chave atua como um separador para suas sub-árvores[cite: 1157, 1171].
+    * [cite_start]A chave a ser removida é substituída por um novo separador, que geralmente é o seu sucessor imediato (o menor valor na sub-árvore direita) ou seu predecessor (o maior valor na sub-árvore esquerda)[cite: 1251].
+    * [cite_start]A chave substituta é então removida de sua posição original (que será em um nó folha), transformando o problema em um caso de remoção em nó folha, que pode então levar a redistribuições ou fusões[cite: 1252].
