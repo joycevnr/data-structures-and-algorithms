@@ -148,3 +148,61 @@ public class HeapSort {
         return true;
     }
 }
+;
+
+public static void heapSortInPlace(int[] array) {
+    if (array == null || array.length <= 1) {
+        return;
+    }
+    
+    int n = array.length;
+    
+    // PHASE 1: Build Max-Heap from unsorted array
+    buildMaxHeap(array);
+    
+    // PHASE 2: Extract elements in descending order
+    for (int i = n - 1; i > 0; i--) {
+        // Move max element (root) to final position
+        swap(array, 0, i);
+        
+        // Reduce heap size and restore heap property
+        heapify(array, 0, i);
+    }
+}
+
+private static void buildMaxHeap(int[] array) {
+    int n = array.length;
+    
+    // Start from last non-leaf node and heapify all nodes
+    for (int i = (n / 2) - 1; i >= 0; i--) {
+        heapify(array, i, n);
+    }
+}
+
+private static void heapify(int[] array, int index, int heapSize) {
+    int left = 2 * index + 1;   // Left child
+    int right = 2 * index + 2;  // Right child
+    int largest = index;        // Assume parent is largest
+    
+    // Check if left child exists and is greater than parent
+    if (left < heapSize && array[left] > array[largest]) {
+        largest = left;
+    }
+    
+    // Check if right child exists and is greater than current largest
+    if (right < heapSize && array[right] > array[largest]) {
+        largest = right;
+    }
+    
+    // If largest is not the parent, swap and continue recursively
+    if (largest != index) {
+        swap(array, index, largest);
+        heapify(array, largest, heapSize);
+    }
+}
+
+private static void swap(int[] array, int i, int j) {
+    int temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+}
