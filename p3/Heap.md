@@ -64,22 +64,23 @@ A remoção em um Heap sempre retira o elemento de maior prioridade, ou seja, a 
 
   *   Resposta:  
     1.    Propriedade de Ordem (Heap Property):   Em um Max-Heap, o valor de um nó é sempre   maior ou igual   ao de seus filhos. A importância é que essa regra garante que o elemento de maior valor (ou maior prioridade) estará sempre na raiz da árvore, permitindo acesso a ele em tempo constante `O(1)`.
-    2.    Propriedade da Forma (Shape Property):   O Heap deve ser uma   árvore binária completa ou quase-completa  , preenchida da esquerda para a direita. A importância é que essa forma garante que a altura da árvore será sempre a mínima possível (`O(log n)`), o que torna as operações de inserção e remoção extremamente eficientes.
+    Propriedade da Forma (Shape Property):   O Heap deve ser uma   árvore binária completa ou quase-completa  , preenchida da esquerda para a direita. A importância é que essa forma garante que a altura da árvore será sempre a mínima possível (`O(log n)`), o que torna as operações de inserção e remoção extremamente eficientes.
+    
 
-  2. Por que a implementação de um Heap é geralmente feita com um array em vez de nós com ponteiros?  
 
-  *   Resposta:   A implementação com array é possível e mais eficiente graças à   Propriedade da Forma  . Como a árvore é sempre completa ou quase-completa, não há "buracos" na sua estrutura. Isso permite mapear a árvore perfeitamente para um array (percorrendo-a em largura), o que economiza memória (não há necessidade de ponteiros `left`, `right`, `parent`) e permite calcular a posição de pais e filhos com fórmulas matemáticas simples.
+    2. Por que a implementação de um Heap é geralmente feita com um array em vez de nós com ponteiros?  
 
-  3. Descreva o algoritmo para inserir um novo elemento em um Max-Heap. Qual sua complexidade?  
+    *   Resposta:   A implementação com array é possível e mais eficiente graças à   Propriedade da Forma  . Como a árvore é sempre completa ou quase-completa, não há "buracos" na sua estrutura. Isso permite mapear a árvore perfeitamente para um array (percorrendo-a em largura), o que economiza memória (não há necessidade de ponteiros `left`, `right`, `parent`) e permite calcular a posição de pais e filhos com fórmulas matemáticas simples. Além disso, essa implementação resolve o problema de custo das estruturas lineares: em um array desordenado, a inserção tem custo `O(1)` mas a remoção custa `O(n)` (é necessário percorrer toda a lista para encontrar o elemento de maior prioridade); já em um array ordenado, a inserção custa `O(n)` (precisa encontrar a posição correta) mas a remoção é `O(1)` (sempre remove o último elemento). O Heap com array oferece `O(log n)` para ambas as operações.
 
-  *   Resposta:  
+  1. Descreva o algoritmo para inserir um novo elemento em um Max-Heap. Qual sua complexidade?
+
+  *   Resposta:
     1.  O novo elemento é adicionado na primeira posição livre ao final do array, mantendo a árvore quase-completa.
     2.  Para restaurar a ordem, o novo elemento "sobe" na árvore (processo de   sift-up  ): ele é comparado com seu pai e, se for maior, eles trocam de lugar.
     3.  Esse processo se repete até que o elemento seja menor que seu pai ou chegue à raiz.
-    <!-- end list -->
       * A complexidade é   `O(log n)`  , pois, no pior caso, o elemento sobe todo o caminho da base até a raiz, um caminho igual à altura da árvore.
 
-  4. Como funciona a remoção do elemento máximo de um Max-Heap? Qual a função da rotina `heapify` nesse processo?  
+  1. Como funciona a remoção do elemento máximo de um Max-Heap? Qual a função da rotina `heapify` nesse processo?  
 
   *   Resposta:  
     1.  A remoção sempre retira o elemento máximo, que está na raiz (índice 0).
@@ -139,7 +140,7 @@ public class PriorityQueue<T extends Comparable<T>> {
 
 ### Parte 3: Heapsort
 
-  O que é o Heapsort?  
+  O que é o Heapsort?
 
 O   Heapsort   é um algoritmo de ordenação eficiente que usa a estrutura de dados Heap para organizar os elementos. Ele é um algoritmo do tipo "in-place" (não precisa de um array auxiliar) e tem uma complexidade de tempo garantida de   `O(n log n)`  .
 
@@ -159,60 +160,116 @@ Depois que o array é um Max-Heap, o algoritmo extrai repetidamente o maior elem
   Implementação do Heapsort (em Java):  
 
 ```java
-public class Heapsort {
 
-    public void sort(int[] arr) {
-        int n = arr.length;
-
-        // Fase 1: Construir o Max-Heap (reorganizar o array)
-        // Começa do pai do último elemento e vai até a raiz
-        for (int i = n / 2 - 1; i >= 0; i--) {
-            heapify(arr, n, i);
-        }
-
-        // Fase 2: Extrair elementos um por um do heap
-        for (int i = n - 1; i > 0; i--) {
-            // Move a raiz atual (maior elemento) para o fim
-            int temp = arr[0];
-            arr[0] = arr[i];
-            arr[i] = temp;
-
-            // Chama heapify na heap reduzida para restaurar a ordem
-            heapify(arr, i, 0);
-        }
+/**
+ * Ordena o array interno usando Heap Sort
+ * Preserva o heap original, retorna uma cópia ordenada
+ * @return Array ordenado em ordem crescente
+ */
+public int[] heapSort() {
+    if (isEmpty()) {
+        return new int[0];
     }
+    
+    // Cria uma cópia para não modificar o heap original
+    int[] sortedArray = Arrays.copyOf(this.heap, this.size());
+    int heapSize = this.size();
+    
+    // Já é um max-heap válido, então vai direto para a ordenação
+    for (int i = heapSize - 1; i > 0; i--) {
+        // Troca a raiz (maior) com o último elemento da heap
+        swapInArray(sortedArray, 0, i);
+        
+        // Aplica heapify na heap reduzida
+        heapifyForSort(sortedArray, i, 0);
+    }
+    
+    return sortedArray;
+}
 
-    /*  
-     * Função para aplicar a rotina heapify (sift-down)
-     * @param arr O array
-     * @param n   O tamanho do heap
-     * @param i   O índice da raiz da sub-árvore a ser corrigida
-     */
-    void heapify(int[] arr, int n, int i) {
-        int largest = i;       // Inicializa o maior como a raiz
-        int left = 2 * i + 1;  // Índice do filho esquerdo
-        int right = 2 * i + 2; // Índice do filho direito
+/**
+ * Versão destrutiva - converte o próprio heap em array ordenado
+ * Após chamar este método, o heap não será mais válido
+ * @return Array ordenado
+ */
+public int[] heapSortDestructive() {
+    if (isEmpty()) {
+        return new int[0];
+    }
+    
+    int originalSize = this.size();
+    
+    // Usa o heap atual para fazer a ordenação
+    for (int i = this.tail; i > 0; i--) {
+        // Troca a raiz com o último elemento
+        swap(0, i);
+        
+        // Reduz o tamanho lógico da heap
+        this.tail--;
+        
+        // Restaura a propriedade do heap
+        heapify(0);
+    }
+    
+    // Cria o resultado e reseta o heap
+    int[] result = Arrays.copyOf(this.heap, originalSize);
+    this.tail = -1;  // Reseta o heap
+    
+    return result;
+}
 
-        // Se o filho esquerdo for maior que a raiz
-        if (left < n && arr[left] > arr[largest]) {
-            largest = left;
-        }
+/**
+ * Heapify específico para o heap sort (não modifica o objeto)
+ */
+private void heapifyForSort(int[] arr, int heapSize, int index) {
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+    int largest = index;
+    
+    // Encontra o maior entre pai e filhos
+    if (left < heapSize && arr[left] > arr[largest]) {
+        largest = left;
+    }
+    
+    if (right < heapSize && arr[right] > arr[largest]) {
+        largest = right;
+    }
+    
+    // Se o maior não é o pai, troca e continua
+    if (largest != index) {
+        swapInArray(arr, index, largest);
+        heapifyForSort(arr, heapSize, largest);
+    }
+}
 
-        // Se o filho direito for maior que o maior até agora
-        if (right < n && arr[right] > arr[largest]) {
-            largest = right;
-        }
+/**
+ * Swap para arrays externos (não modifica this.heap)
+ */
+private void swapInArray(int[] arr, int i, int j) {
+    int temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
+}
 
-        // Se o maior não for a raiz
-        if (largest != i) {
-            // Troca a raiz com o maior
-            int swap = arr[i];
-            arr[i] = arr[largest];
-            arr[largest] = swap;
 
-            // Recursivamente aplica heapify na sub-árvore afetada
-            heapify(arr, n, largest);
-        }
+```
+
+```java
+// Pseudocódigo do Heap Sort
+public void heapSort(int[] array) {
+    // 1. Construir max-heap
+    buildMaxHeap(array);
+    
+    // 2. Para cada posição do final para o início
+    for (int i = array.length - 1; i > 0; i--) {
+        // Remove a raiz (maior elemento) e coloca na posição final
+        swap(array[0], array[i]);  // Maior elemento vai para posição correta
+        
+        // Reduz o tamanho da heap (exclui a posição já ordenada)
+        heapSize--;
+        
+        // Restaura a propriedade da heap na raiz
+        heapify(array, 0);
     }
 }
 ```
