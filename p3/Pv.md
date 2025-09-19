@@ -112,38 +112,38 @@ Esta propriedade é crucial porque estabelece uma restrição estrutural rígida
 
 ### Inserção
 
-A inserção combina a inserção de uma BST com um procedimento de correção (`fix-up`) para manter as propriedades da Árvore PV.  Um novo nó tem sempre a cor vermelha inicial[cite: 336].
+A inserção combina a inserção de uma BST com um procedimento de correção (`fix-up`) para manter as propriedades da Árvore PV.  Um novo nó tem sempre a cor vermelha inicial.
 
 **Passo a Passo da Inserção e Correção:**
 
-1.   **Inserção Inicial:** Insira o novo nó `N` na árvore como em uma BST comum[cite: 337, 345].
-2.   **Coloração Inicial:** Pinte o novo nó `N` de vermelho[cite: 346].
-3.   **Início da Correção (`fix-up`):** Inicie o processo de verificação a partir do nó `N`[cite: 346].  O procedimento de correção é dividido nos seguintes casos sequenciais[cite: 339]:
+1.   **Inserção Inicial:** Insira o novo nó `N` na árvore como em uma BST comum.
+2.   **Coloração Inicial:** Pinte o novo nó `N` de vermelho.
+3.   **Início da Correção (`fix-up`):** Inicie o processo de verificação a partir do nó `N`.  O procedimento de correção é dividido nos seguintes casos sequenciais:
 
     * **Caso 1: `N` é a Raiz**
-        *  Se o novo nó `N` é a raiz da árvore, sua cor é mudada para preto[cite: 353]. Isso garante que a propriedade da raiz preta seja mantida. A correção termina aqui. Se não for a raiz, prossiga para o Caso 2.
+        *  Se o novo nó `N` é a raiz da árvore, sua cor é mudada para preto. Isso garante que a propriedade da raiz preta seja mantida. A correção termina aqui. Se não for a raiz, prossiga para o Caso 2.
 
     * **Caso 2: O Pai de `N` é Preto**
-        *  Se o pai do nó `N` já for preto, a inserção de `N` (vermelho) não viola nenhuma propriedade[cite: 363]. A árvore continua válida e a correção termina. Se o pai for vermelho, prossiga para o Caso 3.
+        *  Se o pai do nó `N` já for preto, a inserção de `N` (vermelho) não viola nenhuma propriedade. A árvore continua válida e a correção termina. Se o pai for vermelho, prossiga para o Caso 3.
 
     * **Caso 3: O Pai e o Tio de `N` são Vermelhos**
-        *  Se o pai (`P`) de `N` é vermelho e o tio (`U`, irmão do pai) também é vermelho[cite: 375], uma recoloração é realizada:
-            1.   O pai `P` é recolorido para preto[cite: 376].
-            2.   O tio `U` é recolorido para preto[cite: 383].
-            3.   O avô `G` é recolorido para vermelho[cite: 386].
-            4.   O processo de `fix-up` é reiniciado, agora focando no avô `G` como o novo `N`[cite: 393].
+        *  Se o pai (`P`) de `N` é vermelho e o tio (`U`, irmão do pai) também é vermelho, uma recoloração é realizada:
+            1.   O pai `P` é recolorido para preto.
+            2.   O tio `U` é recolorido para preto.
+            3.   O avô `G` é recolorido para vermelho.
+            4.   O processo de `fix-up` é reiniciado, agora focando no avô `G` como o novo `N`.
 
     * **Caso 4: O Pai é Vermelho, o Tio é Preto e formam um "Triângulo"**
         * Esta situação ocorre se o tio de `N` for preto e `N` e seu pai `P` estiverem em lados opostos em relação ao avô `G` (ex: `P` é filho esquerdo e `N` é filho direito).
-        *  Uma rotação é aplicada no pai `P` para transformar a configuração em uma "linha"[cite: 410, 420].
-        *  Após a rotação, a correção continua no Caso 5[cite: 426].
+        *  Uma rotação é aplicada no pai `P` para transformar a configuração em uma "linha".
+        *  Após a rotação, a correção continua no Caso 5.
 
     * **Caso 5: O Pai é Vermelho, o Tio é Preto e formam uma "Linha"**
         * Esta situação ocorre se o tio de `N` for preto e `N` e seu pai `P` estiverem do mesmo lado em relação ao avô `G` (ex: `P` e `N` são ambos filhos esquerdos).
         * A correção é feita com uma recoloração e uma rotação:
-            1.   O pai `P` é recolorido para preto[cite: 459].
-            2.   O avô `G` é recolorido para vermelho[cite: 460].
-            3.   Uma rotação é aplicada no avô `G`[cite: 463, 465].
+            1.   O pai `P` é recolorido para preto.
+            2.   O avô `G` é recolorido para vermelho.
+            3.   Uma rotação é aplicada no avô `G`.
         * Após esses passos, a violação é corrigida e o processo termina.
 
 ### Remoção
