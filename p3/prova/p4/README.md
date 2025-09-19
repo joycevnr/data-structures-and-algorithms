@@ -64,7 +64,7 @@ Restrições: **você não pode criar nenhum método adicional.** Você apenas p
 
 * (1.0) Dado que não há repetições em um Heap-max e que há pelo menos 2 elementos nesse heap, o segundo maior elemento é sempre filho da raiz. Isso é verdade? Justifique sua resposta.
 
-    Sim, a afirmação é **verdadeira**. A justificativa vem de uma dedução lógica baseada na propriedade fundamental do Max-Heap, e não de um exemplo específico.
+    Sim, a afirmação é verdadeira. A justificativa vem de uma dedução lógica baseada na propriedade fundamental do Max-Heap, e não de um exemplo específico.
 
     1.  Seja **R** a raiz da árvore. Pela definição de Max-Heap, **R** é o maior elemento de toda a árvore.
     2.  Seja **S** o segundo maior elemento da árvore.
@@ -99,3 +99,125 @@ Restrições: **você não pode criar nenhum método adicional.** Você apenas p
 * A nota será calculada a partir dos testes e análise manual do código. Essa análise manual vai considerar se a solução é eficiente, se não tem loops desnecessários etc.
 
 * Só serão corrigidas as provas dos alunos que assinaram a lista de presença física no laboratório.
+
+
+### **1. Inserção em Árvore B**
+
+#### **Processo de Inserção**
+
+A inserção de uma nova chave em uma Árvore B sempre ocorre em um nó folha. O algoritmo desce da raiz até a folha apropriada e insere a chave, mantendo a ordem.
+
+#### **Tratamento de Overflow (Nó Cheio)**
+
+Se a inserção faz com que um nó exceda o número máximo de chaves (`M-1`), ocorre um **overflow**, que é resolvido com uma operação de **split (cisão)**:
+
+1.  A chave **mediana** do nó cheio é identificada.
+2.  A mediana é **promovida** para o nó pai.
+3.  O nó original é dividido em dois novos nós: um com as chaves menores que a mediana e outro com as chaves maiores. Se a promoção da mediana causar overflow no pai, o processo se repete recursivamente.
+
+#### **Exemplo Concreto: Inserir `6, 7, 11, 19, 20, 25` em B-Tree com M=4 (Máx. chaves = 3)**
+
+1.  **Inserir 6, 7, 11:**
+
+      * `[ 6, 7, 11 ]` (O nó raiz está cheio).
+
+2.  **Inserir 19:**
+
+      * Tentativa de inserir 19 no nó `[ 6, 7, 11 ]` causa **overflow** (`[ 6, 7, 11, 19 ]`).
+      * A mediana é **7**.
+      * **7** é promovido para uma nova raiz.
+      * O nó é dividido em `[ 6 ]` e `[ 11, 19 ]`.
+      * **Árvore resultante:**
+        ```
+              [ 7 ]
+             /     \
+        [ 6 ]    [ 11, 19 ]
+        ```
+
+3.  **Inserir 20:**
+
+      * O 20 é inserido no nó `[ 11, 19 ]`, que se torna `[ 11, 19, 20 ]` (cheio).
+
+4.  **Inserir 25:**
+
+      * Tentativa de inserir 25 no nó `[ 11, 19, 20 ]` causa **overflow** (`[ 11, 19, 20, 25 ]`).
+      * A mediana é **19**.
+      * **19** é promovido para o nó pai (`[ 7 ]`), que se torna `[ 7, 19 ]`.
+      * O nó é dividido em `[ 11 ]` e `[ 20, 25 ]`.
+      * **Árvore final:**
+        ```
+              [ 7, 19 ]
+             /    |    \
+        [ 6 ]  [ 11 ]  [ 20, 25 ]
+        ```
+
+-----
+
+### **2. Remoção em Árvore B**
+
+#### **Processo de Remoção**
+
+A remoção busca a chave e a apaga.
+
+  * **Se a chave está em um nó folha:** É removida diretamente.
+  * **Se a chave está em um nó interno:** É substituída por sua sucessora ou predecessora (que está em uma folha), e a remoção é então feita na folha.
+
+#### **Tratamento de Underflow (Nó Abaixo do Mínimo)**
+
+Se a remoção faz um nó ficar com menos chaves que o mínimo (`ceil(M/2) - 1`), ocorre **underflow**, resolvido com uma das seguintes estratégias:
+
+1.  **Redistribuição (Empréstimo):** Se um nó irmão adjacente tem chaves sobrando, uma chave do pai desce para o nó com underflow e uma chave do irmão sobe para o pai.
+2.  **Concatenação (Merge):** Se os irmãos não podem emprestar chaves, o nó com underflow é fundido com um irmão. A chave do pai que os separa desce para o novo nó fundido. Este processo pode causar underflow no pai, propagando a correção para cima.
+
+#### **Exemplos Concretos (M=4, Mín. chaves = 1, usando a árvore final acima)**
+
+  * **Exemplo 1: Remover 11 (causa underflow e redistribuição)**
+
+    1.  O nó `[ 11 ]` tem 1 chave (mínimo). A remoção causa underflow.
+    2.  O irmão direito `[ 20, 25 ]` tem chaves sobrando.
+    3.  **Redistribuição:** A chave `19` do pai desce. A chave `20` do irmão sobe.
+    4.  O nó que tinha `11` recebe o `19`, tornando-se `[ 19 ]`. O pai se torna `[ 7, 20 ]`. O irmão se torna `[ 25 ]`.
+
+  * **Exemplo 2: Remover 6 (causa underflow e merge)**
+
+    1.  O nó `[ 6 ]` tem 1 chave (mínimo). A remoção causa underflow.
+    2.  O irmão `[ 11 ]` também está no mínimo e não pode emprestar.
+    3.  **Merge:** O nó vazio e o irmão `[ 11 ]` são fundidos. A chave `7` do pai, que os separa, desce.
+    4.  É criado um novo nó `[ 7, 11 ]`. O nó pai `[ 7, 19 ]` perde a chave 7, tornando-se `[ 19 ]`.
+
+-----
+
+### **3. Casos de Inserção em Árvore Rubro-Negra (PV)**
+
+Ao inserir um novo nó, ele é sempre colorido de **VERMELHO**. A correção é necessária se o pai do novo nó também for vermelho. Os casos são:
+
+  * **Caso 1: Árvore vazia.**
+
+      * **Solução:** O novo nó se torna a raiz e é colorido de **PRETO**.
+
+  * **Caso 2: O pai do novo nó é PRETO.**
+
+      * **Solução:** Nenhuma ação é necessária. A árvore continua válida.
+
+*A partir daqui, assume-se que o pai (`P`) do novo nó (`N`) é VERMELHO (conflito).*
+
+  * **Caso 3: O Pai (`P`) e o Tio (`T`) são VERMELHOS.**
+
+      * **Solução (Recoloração):**
+        1.  Pai (`P`) e Tio (`T`) são coloridos de **PRETO**.
+        2.  Avô (`A`) é colorido de **VERMELHO**.
+        3.  O algoritmo reinicia a verificação a partir do Avô, que pode ter um novo conflito.
+
+  * **Caso 4: Pai (`P`) é VERMELHO, Tio (`T`) é PRETO (caso "zigue-zague").**
+
+      * **Solução (Rotação + Caso 5):**
+        1.  Uma **rotação** é aplicada no Pai (`P`) para transformar o caso em uma "linha reta".
+        2.  A situação se torna idêntica à do Caso 5, que é então aplicado.
+
+  * **Caso 5: Pai (`P`) é VERMELHO, Tio (`T`) é PRETO (caso "linha reta").**
+
+      * **Solução (Recoloração + Rotação):**
+        1.  Pai (`P`) é colorido de **PRETO**.
+        2.  Avô (`A`) é colorido de **VERMELHO**.
+        3.  Uma **rotação** é aplicada no Avô (`A`).
+        4.  O conflito é resolvido e o processo termina.
