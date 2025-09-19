@@ -216,7 +216,32 @@ public class BST { //Árvore Binária de Pesquisa (BST)
         return this.size;
     }
 }
-
+    /**
+     * Retorna a maior diferença de alturas entre subárvores esquerda e direita
+     * de qualquer nó na árvore.
+     */
+    public int maiorDiferencaAlturas() {
+        return maiorDiferencaAlturas(this.root);
+    }
+    
+    private int maiorDiferencaAlturas(Node node) {
+        // Caso base: árvore vazia não tem diferença
+        if (node == null) return 0;
+        
+        // Calcula as alturas das subárvores
+        int alturaEsquerda = height(node.left);
+        int alturaDireita = height(node.right);
+        
+        // Diferença absoluta no nó atual
+        int diferencaAtual = Math.abs(alturaEsquerda - alturaDireita);
+        
+        // Recursivamente encontra a maior diferença nas subárvores
+        int maiorEsquerda = maiorDiferencaAlturas(node.left);
+        int maiorDireita = maiorDiferencaAlturas(node.right);
+        
+        // Retorna o maior valor entre a diferença atual e as diferenças das subárvores
+        return Math.max(diferencaAtual, Math.max(maiorEsquerda, maiorDireita));
+    }
 /**
  * Classe que representa um nó da árvore.
  */
