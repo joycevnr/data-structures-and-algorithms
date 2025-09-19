@@ -100,7 +100,7 @@ Esta propriedade é crucial porque estabelece uma restrição estrutural rígida
 
 ### Pesquisa (Busca)
 
-[cite_start]A pesquisa em uma Árvore PV é executada de forma idêntica à de uma árvore binária de busca (BST)[cite: 265]. [cite_start]A cor dos nós não interfere no algoritmo de busca[cite: 265]. O processo segue os seguintes passos:
+ A pesquisa em uma Árvore PV é executada de forma idêntica à de uma árvore binária de busca (BST)[cite: 265].  A cor dos nós não interfere no algoritmo de busca[cite: 265]. O processo segue os seguintes passos:
 1.  Comece a busca no nó raiz.
 2.  Compare o valor procurado com a chave do nó atual.
 3.  Se o valor for menor, continue a busca na sub-árvore esquerda.
@@ -108,56 +108,56 @@ Esta propriedade é crucial porque estabelece uma restrição estrutural rígida
 5.  Se o valor for igual, a chave foi encontrada.
 6.  Se chegar a uma folha (NIL) sem encontrar o valor, ele não existe na árvore.
 
-[cite_start]Devido ao balanceamento da árvore, a complexidade de tempo desta operação é O(log n)[cite: 266].
+ Devido ao balanceamento da árvore, a complexidade de tempo desta operação é O(log n)[cite: 266].
 
 ### Inserção
 
-A inserção combina a inserção de uma BST com um procedimento de correção (`fix-up`) para manter as propriedades da Árvore PV. [cite_start]Um novo nó tem sempre a cor vermelha inicial[cite: 336].
+A inserção combina a inserção de uma BST com um procedimento de correção (`fix-up`) para manter as propriedades da Árvore PV.  Um novo nó tem sempre a cor vermelha inicial[cite: 336].
 
 **Passo a Passo da Inserção e Correção:**
 
-1.  [cite_start]**Inserção Inicial:** Insira o novo nó `N` na árvore como em uma BST comum[cite: 337, 345].
-2.  [cite_start]**Coloração Inicial:** Pinte o novo nó `N` de vermelho[cite: 346].
-3.  [cite_start]**Início da Correção (`fix-up`):** Inicie o processo de verificação a partir do nó `N`[cite: 346]. [cite_start]O procedimento de correção é dividido nos seguintes casos sequenciais[cite: 339]:
+1.   **Inserção Inicial:** Insira o novo nó `N` na árvore como em uma BST comum[cite: 337, 345].
+2.   **Coloração Inicial:** Pinte o novo nó `N` de vermelho[cite: 346].
+3.   **Início da Correção (`fix-up`):** Inicie o processo de verificação a partir do nó `N`[cite: 346].  O procedimento de correção é dividido nos seguintes casos sequenciais[cite: 339]:
 
     * **Caso 1: `N` é a Raiz**
-        * [cite_start]Se o novo nó `N` é a raiz da árvore, sua cor é mudada para preto[cite: 353]. Isso garante que a propriedade da raiz preta seja mantida. A correção termina aqui. Se não for a raiz, prossiga para o Caso 2.
+        *  Se o novo nó `N` é a raiz da árvore, sua cor é mudada para preto[cite: 353]. Isso garante que a propriedade da raiz preta seja mantida. A correção termina aqui. Se não for a raiz, prossiga para o Caso 2.
 
     * **Caso 2: O Pai de `N` é Preto**
-        * [cite_start]Se o pai do nó `N` já for preto, a inserção de `N` (vermelho) não viola nenhuma propriedade[cite: 363]. A árvore continua válida e a correção termina. Se o pai for vermelho, prossiga para o Caso 3.
+        *  Se o pai do nó `N` já for preto, a inserção de `N` (vermelho) não viola nenhuma propriedade[cite: 363]. A árvore continua válida e a correção termina. Se o pai for vermelho, prossiga para o Caso 3.
 
     * **Caso 3: O Pai e o Tio de `N` são Vermelhos**
-        * [cite_start]Se o pai (`P`) de `N` é vermelho e o tio (`U`, irmão do pai) também é vermelho[cite: 375], uma recoloração é realizada:
-            1.  [cite_start]O pai `P` é recolorido para preto[cite: 376].
-            2.  [cite_start]O tio `U` é recolorido para preto[cite: 383].
-            3.  [cite_start]O avô `G` é recolorido para vermelho[cite: 386].
-            4.  [cite_start]O processo de `fix-up` é reiniciado, agora focando no avô `G` como o novo `N`[cite: 393].
+        *  Se o pai (`P`) de `N` é vermelho e o tio (`U`, irmão do pai) também é vermelho[cite: 375], uma recoloração é realizada:
+            1.   O pai `P` é recolorido para preto[cite: 376].
+            2.   O tio `U` é recolorido para preto[cite: 383].
+            3.   O avô `G` é recolorido para vermelho[cite: 386].
+            4.   O processo de `fix-up` é reiniciado, agora focando no avô `G` como o novo `N`[cite: 393].
 
     * **Caso 4: O Pai é Vermelho, o Tio é Preto e formam um "Triângulo"**
         * Esta situação ocorre se o tio de `N` for preto e `N` e seu pai `P` estiverem em lados opostos em relação ao avô `G` (ex: `P` é filho esquerdo e `N` é filho direito).
-        * [cite_start]Uma rotação é aplicada no pai `P` para transformar a configuração em uma "linha"[cite: 410, 420].
-        * [cite_start]Após a rotação, a correção continua no Caso 5[cite: 426].
+        *  Uma rotação é aplicada no pai `P` para transformar a configuração em uma "linha"[cite: 410, 420].
+        *  Após a rotação, a correção continua no Caso 5[cite: 426].
 
     * **Caso 5: O Pai é Vermelho, o Tio é Preto e formam uma "Linha"**
         * Esta situação ocorre se o tio de `N` for preto e `N` e seu pai `P` estiverem do mesmo lado em relação ao avô `G` (ex: `P` e `N` são ambos filhos esquerdos).
         * A correção é feita com uma recoloração e uma rotação:
-            1.  [cite_start]O pai `P` é recolorido para preto[cite: 459].
-            2.  [cite_start]O avô `G` é recolorido para vermelho[cite: 460].
-            3.  [cite_start]Uma rotação é aplicada no avô `G`[cite: 463, 465].
+            1.   O pai `P` é recolorido para preto[cite: 459].
+            2.   O avô `G` é recolorido para vermelho[cite: 460].
+            3.   Uma rotação é aplicada no avô `G`[cite: 463, 465].
         * Após esses passos, a violação é corrigida e o processo termina.
 
 ### Remoção
 
-[cite_start]A remoção em uma Árvore PV também utiliza a lógica de remoção de uma BST, mas requer um procedimento de `fix-up` para garantir que as propriedades não sejam violadas[cite: 650, 651].
+ A remoção em uma Árvore PV também utiliza a lógica de remoção de uma BST, mas requer um procedimento de `fix-up` para garantir que as propriedades não sejam violadas[cite: 650, 651].
 
 **Passo a Passo Geral da Remoção:**
 
 1.  **Remoção Inicial:** Realize a remoção do nó como em uma BST.
 
 2.  **Análise do Caso:**
-    * [cite_start]**Caso Simples: Remoção de uma Folha Vermelha:** Se o nó removido for uma folha vermelha, nenhuma propriedade da árvore é violada[cite: 655, 678]. A altura preta de todos os caminhos permanece a mesma. A operação termina aqui.
+    *  **Caso Simples: Remoção de uma Folha Vermelha:** Se o nó removido for uma folha vermelha, nenhuma propriedade da árvore é violada[cite: 655, 678]. A altura preta de todos os caminhos permanece a mesma. A operação termina aqui.
 
-    * [cite_start]**Caso Problemático: Remoção de um Nó Preto:** A remoção de um nó preto é a principal causa de problemas, pois pode alterar a altura preta de um caminho, violando uma das invariantes[cite: 790, 886].
-        * [cite_start]Quando a remoção de um nó preto causa uma violação na altura preta, um procedimento de correção é iniciado[cite: 791].
-        * [cite_start]O `fix-up` da remoção foca no irmão (`sibling`) e no sobrinho mais próximo do nó que foi removido para restaurar o balanceamento[cite: 791, 860].
-        * [cite_start]Este processo de correção é mais complicado que o da inserção e envolve vários casos particulares que utilizam rotações e recolorações para garantir que todas as propriedades da Árvore PV voltem a ser satisfeitas[cite: 887].
+    *  **Caso Problemático: Remoção de um Nó Preto:** A remoção de um nó preto é a principal causa de problemas, pois pode alterar a altura preta de um caminho, violando uma das invariantes[cite: 790, 886].
+        *  Quando a remoção de um nó preto causa uma violação na altura preta, um procedimento de correção é iniciado[cite: 791].
+        *  O `fix-up` da remoção foca no irmão (`sibling`) e no sobrinho mais próximo do nó que foi removido para restaurar o balanceamento[cite: 791, 860].
+        *  Este processo de correção é mais complicado que o da inserção e envolve vários casos particulares que utilizam rotações e recolorações para garantir que todas as propriedades da Árvore PV voltem a ser satisfeitas[cite: 887].
