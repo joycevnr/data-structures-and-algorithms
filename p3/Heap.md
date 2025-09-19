@@ -1,6 +1,4 @@
-### Resumo Detalhado: Heap
-
-O material introduz o   Heap   como uma solução eficiente para a implementação de   Filas de Prioridade  , superando as limitações de estruturas lineares como listas e arrays.
+## Heap
 
 #### 1. O Problema: Filas de Prioridade com Listas/Arrays
 
@@ -184,7 +182,7 @@ public class Heapsort {
         }
     }
 
-    /  
+    /*  
      * Função para aplicar a rotina heapify (sift-down)
      * @param arr O array
      * @param n   O tamanho do heap

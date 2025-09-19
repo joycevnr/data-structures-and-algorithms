@@ -120,3 +120,20 @@ Resposta: A Árvore B se mantém balanceada principalmente através da sua propr
 
 
 split (na inserção) e fusão/redistribuição (na remoção) são projetadas para garantir que essa propriedade nunca seja violada. A árvore cresce "para cima" (uma nova raiz é criada quando a antiga sofre split) e encolhe "de cima" (a raiz é removida quando seus filhos se fundem), mantendo assim todas as folhas sempre na mesma profundidade.
+
+
+
+Princípios Gerais da Remoção
+O processo de remoção em uma Árvore B visa retirar uma chave mantendo todas as propriedades da árvore intactas. O principal desafio é lidar com a situação em que um nó fica com menos chaves que o mínimo permitido, uma condição chamada  underflow.
+
+Para resolver o underflow, existem duas operações principais:
+
+
+Redistribuição: Parecida com uma rotação, onde um nó "empresta" uma chave de um nó irmão adjacente que tenha chaves sobrando.
+
+
+Concatenação (Join): Ocorre quando o irmão também está no limite mínimo de chaves. O nó com underflow se une a um irmão e a uma chave do pai.
+
+
+
+A remoção sempre ocorre nas folhas. Se o elemento a ser removido não estiver em uma folha, ele é trocado pelo seu sucessor ou predecessor (que estará em uma folha), e a remoção é então realizada na folha.
