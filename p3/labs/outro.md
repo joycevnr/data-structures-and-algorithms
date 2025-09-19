@@ -235,3 +235,31 @@ public int kthSmallest(int k) {
 | **Reverso** | Ordem decrescente | O(n) tempo, O(h) espaço |
 | **Com Range** | Busca em faixa | O(k) onde k = elementos no range |
 
+public void callBestRotation(Node unbalanced) {
+    Node x = unbalanced; // 'x' é o nosso "Avô" desbalanceado
+
+    // O problema está no lado ESQUERDO? (fator de balanço positivo)
+    if (x.isLeftPending()) {
+        Node y = x.left; // 'y' é o "Pai"
+
+        // CASO 1: Rotação Simples à Direita (Esquerda-Esquerda)
+        if (y.left != null) rotateRight(x);
+        // CASO 2: Rotação Dupla (Esquerda-Direita)
+        else {
+            rotateLeft(y);  // 1º Passo: Rotação à esquerda no Pai 'y'
+            rotateRight(x); // 2º Passo: Rotação à direita no Avô 'x'
+        }
+
+    // O problema está no lado DIREITO? (fator de balanço negativo)
+    } else {
+        Node y = x.right; // 'y' é o "Pai"
+
+        // CASO 3: Rotação Simples à Esquerda (Direita-Direita)
+        if (y.right != null) rotateLeft(x);
+        // CASO 4: Rotação Dupla (Direita-Esquerda)
+        else {
+            rotateRight(y); // 1º Passo: Rotação à direita no Pai 'y'
+            rotateLeft(x);  // 2º Passo: Rotação à esquerda no Avô 'x'
+        }
+    }
+}
