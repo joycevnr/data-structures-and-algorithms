@@ -1,5 +1,3 @@
-Vou explicar detalhadamente as **travessias em árvores binárias** e suas variantes, incluindo o **in-order** (em-ordem):
-
 ## **As Três Travessias Clássicas**
 
 ### **1. In-Order (Em-Ordem)**
