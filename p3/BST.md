@@ -1,52 +1,207 @@
-### Resumo: Estruturas de Dados e Algoritmos - Árvores Binárias de Pesquisa
-É uma estrutura de dados para organizar informações com base em uma regra simples: para qualquer nó, todos os valores à esquerda são menores e todos os valores à direita são maiores.
+# Árvores Binárias de Busca (BST)
 
-Características Principais:
+## Definição
 
-Busca Rápida: Encontrar, inserir e remover elementos é extremamente rápido (complexidade O(log n)) se a árvore estiver balanceada.
+Uma **Árvore Binária de Busca (BST)** é uma estrutura de dados hierárquica para organizar informações com base em uma regra fundamental:
 
-Sempre Ordenada: A estrutura se mantém ordenada automaticamente. Um percurso específico (em-ordem) retorna todos os elementos em ordem crescente.
+> **Para qualquer nó, todos os valores à esquerda são menores e todos os valores à direita são maiores.**
 
-Dinâmica: Cresce e diminui de tamanho facilmente, sem precisar definir um limite.
+## Características Principais
 
-Sensível à Inserção: Sua eficiência depende da ordem de inserção. Se os dados forem inseridos já ordenados, ela se torna lenta e ineficiente (O(n)), como uma lista simples.
+### **Busca Rápida**
+- Encontrar, inserir e remover elementos é eficiente
+- **Complexidade**: `O(log n)` se balanceada, `O(n)` no pior caso
 
-  Principais Conceitos e Definições:  
+### **Sempre Ordenada**  
+- A estrutura se mantém ordenada automaticamente
+- Travessia **em-ordem** retorna elementos em ordem crescente
 
-*   Definição:   Uma BST é uma árvore binária baseada em nós onde, para cada nó, todos os valores na subárvore à esquerda são menores que o valor do nó, e todos os valores na subárvore à direita são maiores.
-*   Nó:   A unidade básica da árvore, que armazena um valor e possui referências para os filhos esquerdo (`left`) e direito (`right`), além de uma referência para o pai (`parent`).
-*   Raiz:   O nó especial a partir do qual todos os outros nós podem ser acessados.
-*   Grau de um Nó:   O número de filhos que um nó possui (0, 1 ou 2). Nós com grau 0 são chamados de   folhas  .
-*   Altura:   O maior caminho entre a raiz e uma folha. A eficiência das operações em uma BST é diretamente dependente de sua altura, sendo idealmente $O(\log n)$ em uma árvore balanceada e $O(h)$ no geral, onde $h$ é a altura.
-*   Árvore Completa:   Uma árvore onde todos os nós internos têm grau 2 e todas as folhas estão no mesmo nível, resultando na menor altura possível para a quantidade de nós.
-*   Sucessor e Predecessor:   O sucessor de um nó é o menor valor maior que ele na árvore. O predecessor é o maior valor menor que ele.
+### **Dinâmica**
+- Cresce e diminui facilmente, sem limite predefinido
 
-  Operações Básicas:  
+### **Sensível à Inserção**
+- Eficiência depende da ordem de inserção
+- Dados ordenados podem gerar árvore degenerada (lista linear)
 
-*   Inserção:   Novos elementos são sempre adicionados como folhas. O algoritmo percorre a árvore a partir da raiz, movendo-se para a esquerda se o valor for menor que o nó atual e para a direita se for maior, até encontrar uma posição nula.
-*   Busca:   De forma semelhante à inserção, a busca compara o elemento procurado com os nós, navegando pela subárvore esquerda (se menor) ou direita (se maior) até encontrar o elemento ou chegar a um nó nulo.
-*   Remoção:   É a operação mais complexa, com três casos a serem considerados:
-    1.    O nó é uma folha:   Basta remover a referência do pai para ele.
-    2.    O nó tem um filho:   O pai do nó a ser removido passa a apontar para o único filho deste.
-    3.    O nó tem dois filhos:   O valor do nó é substituído pelo valor do seu sucessor (ou predecessor), e o nó sucessor é então removido (que cairá no caso 1 ou 2).
+---
 
-  Métodos para Percorrer a Árvore:  
+## Conceitos Fundamentais
 
-Existem duas estratégias principais para visitar todos os nós de uma árvore:
+### **Definições Básicas**
 
-1.    Em Profundidade (Depth-First Search - DFS):   Explora um ramo da árvore até o fim antes de retroceder.
-    *   Pré-ordem:   Visita o nó, depois a subárvore esquerda e, por fim, a subárvore direita.
-    *   Em-ordem:   Visita a subárvore esquerda, depois o nó e, por fim, a subárvore direita. Em uma BST, este percurso resulta em uma sequência ordenada dos valores.
-    *   Pós-ordem:   Visita a subárvore esquerda, depois a subárvore direita e, por fim, o nó. A raiz é sempre o último elemento visitado.
+| Conceito | Descrição |
+|----------|-----------|
+| **Nó** | Unidade básica com valor e referências (left, right, parent) |
+| **Raiz** | Nó especial de onde todos os outros são acessíveis |
+| **Grau** | Número de filhos de um nó (0, 1 ou 2) |
+| **Folha** | Nó com grau 0 (sem filhos) |
+| **Altura** | Maior caminho entre raiz e folha |
+| **Nível** | Distância de um nó até a raiz |
 
-2.    Em Largura (Breadth-First Search - BFS):   Visita todos os nós de um mesmo nível antes de descer para o próximo nível. Utiliza uma fila como estrutura de dados auxiliar para controlar a ordem de visitação.
+### **Propriedades Estruturais**
 
+- **Árvore Completa**: Todos nós internos têm grau 2, folhas no mesmo nível
+- **Sucessor**: Menor valor maior que o nó atual
+- **Predecessor**: Maior valor menor que o nó atual
 
-  1. O que é uma Árvore Binária de Pesquisa (BST) e qual a sua principal propriedade?  
+---
 
-  *   Resposta:   Uma Árvore Binária de Pesquisa é uma estrutura de dados de árvore binária baseada em nós. Sua principal propriedade é que, para qualquer nó da árvore, todos os valores na subárvore à sua esquerda são menores que o valor do nó, e todos os valores na subárvore à sua direita são maiores.
+## Operações Básicas
 
-  2. Qual a diferença entre altura e nível de um nó em uma BST?  
+### 1️⃣ **Inserção**
+```java
+// Novos elementos sempre como folhas
+// Navega comparando valores até encontrar posição nula
+if (elemento < atual.valor) → vai para esquerda
+else → vai para direita
+```
+
+### 2️⃣ **Busca**  
+```java
+// Similar à inserção
+// Compara elemento procurado com nós atuais
+// Navega até encontrar elemento ou nó nulo
+```
+
+### 3️⃣ **Remoção** (Mais Complexa)
+**Três casos:**
+
+| Caso | Ação |
+|------|------|
+| **Folha** | Remove referência do pai |
+| **Um filho** | Pai aponta para o único filho |
+| **Dois filhos** | Substitui por sucessor/predecessor |
+
+---
+
+## Métodos de Travessia
+
+### **Em Profundidade -(DFS)Depth-First Search **:   Explora um ramo da árvore até o fim antes de retroceder.
+  
+#### **Pré-ordem** (Raiz → Esquerda → Direita)
+```java
+private void preOrder(Node node) {
+    if (node != null) {
+        visit(node);           // 1. Processa nó
+        preOrder(node.left);   // 2. Subárvore esquerda  
+        preOrder(node.right);  // 3. Subárvore direita
+    }
+}
+```
+
+#### **Em-ordem** (Esquerda → Raiz → Direita)
+```java
+private void inOrder(Node node) {
+    if (node != null) {
+        inOrder(node.left);    // 1. Subárvore esquerda
+        visit(node);           // 2. Processa nó ← ORDEM CRESCENTE!
+        inOrder(node.right);   // 3. Subárvore direita
+    }
+}
+```
+
+#### **Pós-ordem** (Esquerda → Direita → Raiz)
+```java
+private void postOrder(Node node) {
+    if (node != null) {
+        postOrder(node.left);  // 1. Subárvore esquerda
+        postOrder(node.right); // 2. Subárvore direita
+        visit(node);           // 3. Processa nó
+    }
+}
+```
+
+### **Em Largura (BFS)**
+```java
+public void levelOrder() {
+    Queue<Node> fila = new LinkedList<>();
+    fila.add(root);
+    
+    while (!fila.isEmpty()) {
+        Node atual = fila.poll();
+        visit(atual);
+        
+        if (atual.left != null) fila.add(atual.left);
+        if (atual.right != null) fila.add(atual.right);
+    }
+}
+```
+
+---
+
+## Altura vs Nível
+
+### **Definições Formais**
+
+- **Altura**: Número de **arestas** no caminho mais longo da raiz até folha
+- **Nível**: Distância de um nó até a raiz (raiz = nível 0)
+
+### **Convenções**
+- Árvore vazia: altura = -1
+- Nó único: altura = 0  
+- Árvore com altura `h` tem `h + 1` níveis
+
+---
+
+## Questões Teóricas Importantes
+
+### **1. Definição e Propriedade Principal**
+**R:** BST é uma árvore binária onde, para qualquer nó, valores à esquerda são menores e à direita são maiores.
+
+### **2. Altura vs Nível**
+**R:** 
+- **Nível**: distância até a raiz (raiz = 0)
+- **Altura**: maior caminho até folha (medido em arestas)
+
+### **3. Impacto do Desbalanceamento** 
+**R:** Árvore desbalanceada → altura aumenta → operações degradam de `O(log n)` para `O(n)`
+
+### **4. Diferença entre Travessias**
+**R:**
+- **Pré-ordem**: nó → esquerda → direita
+- **Em-ordem**: esquerda → nó → direita (BST = ordem crescente!)
+- **Pós-ordem**: esquerda → direita → nó
+
+### **5. BFS em BST**
+**R:** Explora nível por nível usando fila, visitando todos filhos antes de descer ao próximo nível.
+
+---
+
+## Exercícios Práticos
+
+### **Exemplo: Inserção [50, 30, 70, 20, 40, 60, 80]**
+
+```
+         50
+       /    \
+      30      70
+     /  \    /  \
+    20  40  60  80
+```
+
+### **Sucessores e Predecessores**
+- Sucessor de 30: **40** (mínimo da subárvore direita)
+- Predecessor de 70: **60** (máximo da subárvore esquerda)
+
+### **Resultado das Travessias**
+- **Pré-ordem**: 50, 30, 20, 40, 70, 60, 80
+- **Em-ordem**: 20, 30, 40, 50, 60, 70, 80 ← Ordenado!
+- **Pós-ordem**: 20, 40, 30, 60, 80, 70, 50
+
+### **Remoção do Nó 30**
+Como tem dois filhos, substitui pelo sucessor (40):
+
+```
+         50
+       /    \
+      40      70
+     /       /  \
+    20      60  80
+```
+
+---
+
+*Material de estudo para EDA-LEDA | UFCG*
 
   *   Resposta:  
       *   Nível:   O nível de um nó é a sua distância a partir da raiz. A raiz está no nível 0, seus filhos diretos no nível 1, e assim por diante.

@@ -1,52 +1,291 @@
-Árvores B
-Definição (Bayer e McCreight, 1972):  Para qualquer inteiro positivo par M, uma árvore B (B-tree) de ordem M é uma árvore com as seguintes propriedades:
-cada nó contém no máximo M−1 chaves,
-a raiz contém no mínimo 2 chaves e cada um dos demais nós contém no mínimo M/2 chaves,
-cada nó que não seja uma folha tem um filho para cada uma de suas chaves,
-todos os caminhos da raiz até uma folha têm o mesmo comprimento (ou seja, a árvore é perfeitamente balanceada).
+# Árvores B (B-Trees)
 
-Qual foi a principal motivação para a criação das Árvores B e como sua estrutura resolve esse problema?
-Resposta: A principal motivação foi o alto custo de acesso a dados em memórias secundárias, como discos rígidos. A Árvore B resolve isso utilizando nós (páginas) que armazenam um grande número de chaves. Isso torna a árvore mais larga e com menor altura, reduzindo drasticamente o número de acessos a disco necessários para encontrar um dado.
+## Motivação: O Problema do Armazenamento Secundário
 
-O que é e por que existe?
-A Árvore B (ou B-Tree) é uma estrutura de dados em árvore, auto-balanceada, que generaliza a árvore binária de busca, permitindo que os nós tenham mais de dois filhos.
+### **O Desafio**
+- **Memória Secundária** (HDs, SSDs) é **muito mais lenta** que RAM
+- **Leitura de blocos/páginas** é uma operação custosa
+- Árvores binárias fazem muitos acessos pequenos ao disco
 
-Sua principal motivação foi otimizar o acesso a dados em 
+### **A Solução: Árvores B**
+- **Nós maiores** que armazenam múltiplas chaves
+- **Árvore mais larga e "achatada"** → menor altura
+- **Menos acessos ao disco** para encontrar dados
 
-memória secundária (como HDs), que é muito mais lento que o acesso à memória principal (RAM). A leitura de um "bloco" ou "página" do disco é uma operação cara. A solução da Árvore B foi criar nós (chamados de 
+---
 
-páginas) que armazenam um grande número de chaves. Isso resulta em duas grandes vantagens:
+## Definição Formal (Bayer e McCreight, 1972)
 
+Para qualquer inteiro positivo par **M**, uma **árvore B de ordem M** é uma árvore com as seguintes propriedades:
 
-Redução de Acessos a Disco: Como cada nó tem muitas chaves, a árvore se torna mais "larga" e "achatada", diminuindo sua altura. Menor altura significa menos nós para ler do disco para encontrar uma informação.
+### **Propriedades Fundamentais**
 
-Eficiência: A estrutura garante que a árvore permaneça sempre balanceada, mantendo a eficiência das operações em tempo logarítmico.
+1. **Capacidade Máxima**
+   - Cada nó contém no máximo **M-1 chaves**
+   - Cada nó tem no máximo **M filhos**
 
-Propriedades de uma Árvore B de Ordem m
-A "ordem" 
+2. **Capacidade Mínima**  
+   - A raiz contém no mínimo **2 chaves**
+   - Demais nós contêm no mínimo **⌈M/2⌉ chaves**
+   - Nós internos têm no mínimo **⌈M/2⌉ filhos**
 
-m define o número máximo de filhos que um nó pode ter. Todas as Árvores B de uma dada ordem devem seguir estas regras:
+3. **Estrutura Balanceada**
+   - Cada nó não-folha tem **um filho para cada chave + 1**
+   - **Todos os caminhos** da raiz até folhas têm o **mesmo comprimento**
+   - Árvore **perfeitamente balanceada**
 
+4. **Ordenação**
+   - Chaves dentro de cada nó estão **ordenadas**
+   - Propriedade BST: valores à esquerda < chave < valores à direita
 
+---
 
-Todas as folhas estão no mesmo nível: Esta é a propriedade que garante o balanceamento perfeito da árvore.
+## Estrutura e Características
 
+### **Estrutura de um Nó**
+```java
+class BTreeNode {
+    int[] keys;           // Array de chaves (tamanho M-1)
+    BTreeNode[] children; // Array de filhos (tamanho M)
+    int numKeys;          // Número atual de chaves
+    boolean isLeaf;       // Se é folha ou não
+}
+```
 
-Número de Filhos:
+### **Propriedades de Ordem M**
 
-Todo nó tem no 
+| Propriedade | Valor | Descrição |
+|-------------|-------|-----------|
+| **Chaves por nó** | 0 a M-1 | Máximo de chaves |
+| **Filhos por nó** | 0 a M | Máximo de filhos |
+| **Chaves mín. (raiz)** | 2 | Exceção para raiz |
+| **Chaves mín. (outros)** | ⌈M/2⌉ | Garante preenchimento |
+| **Filhos mín.** | ⌈M/2⌉ | Para nós internos |
 
-máximo m filhos.
+### **Exemplo: B-Tree de Ordem 4**
+- **Máximo**: 3 chaves, 4 filhos por nó
+- **Mínimo**: 2 chaves (raiz), 2 chaves (outros nós)
 
-Todo nó, exceto a raiz, tem no mínimo ⌈m/2⌉ filhos. (O seu material usa 
+```
+       [10, 20]
+     /    |    \
+  [5,8]  [15]  [25,30,35]
+```
 
-m/2 - 1, que é incomum. A definição padrão é 
+---
 
-teto de m/2).
+## Operações Principais
 
-A raiz tem no mínimo 2 filhos, a menos que seja uma folha.
+### **Busca**
+```java
+public BTreeNode search(BTreeNode node, int key) {
+    int i = 0;
+    
+    // Encontra posição da chave ou primeira maior
+    while (i < node.numKeys && key > node.keys[i]) {
+        i++;
+    }
+    
+    // Encontrou a chave
+    if (i < node.numKeys && key == node.keys[i]) {
+        return node;
+    }
+    
+    // Se é folha, chave não existe
+    if (node.isLeaf) {
+        return null;
+    }
+    
+    // Continua busca no filho apropriado
+    return search(node.children[i], key);
+}
+```
 
-Número de Chaves:
+### **Inserção**
+**Processo complexo com splits:**
+
+1. **Localizar** posição de inserção (sempre em folha)
+2. **Inserir** na folha se há espaço
+3. **Split** se nó estiver cheio:
+   - Dividir chaves em dois nós
+   - Promover chave do meio para pai
+   - Recursivamente fazer split no pai se necessário
+
+```java
+public void insert(int key) {
+    if (root.numKeys == MAX_KEYS) {
+        // Raiz cheia - criar nova raiz
+        BTreeNode newRoot = new BTreeNode();
+        newRoot.children[0] = root;
+        newRoot.isLeaf = false;
+        splitChild(newRoot, 0);
+        root = newRoot;
+    }
+    
+    insertNonFull(root, key);
+}
+
+private void splitChild(BTreeNode parent, int index) {
+    BTreeNode fullChild = parent.children[index];
+    BTreeNode newChild = new BTreeNode();
+    
+    // Move metade das chaves para novo nó
+    int midIndex = MIN_KEYS;
+    
+    // Copia chaves superiores
+    for (int i = 0; i < MIN_KEYS; i++) {
+        newChild.keys[i] = fullChild.keys[i + midIndex + 1];
+    }
+    
+    // Se não é folha, copia filhos também
+    if (!fullChild.isLeaf) {
+        for (int i = 0; i <= MIN_KEYS; i++) {
+            newChild.children[i] = fullChild.children[i + midIndex + 1];
+        }
+    }
+    
+    // Atualiza contadores
+    newChild.numKeys = MIN_KEYS;
+    fullChild.numKeys = MIN_KEYS;
+    newChild.isLeaf = fullChild.isLeaf;
+    
+    // Move filhos no pai para abrir espaço
+    for (int i = parent.numKeys; i > index; i--) {
+        parent.children[i + 1] = parent.children[i];
+    }
+    parent.children[index + 1] = newChild;
+    
+    // Move chaves no pai
+    for (int i = parent.numKeys - 1; i >= index; i--) {
+        parent.keys[i + 1] = parent.keys[i];
+    }
+    
+    // Promove chave do meio
+    parent.keys[index] = fullChild.keys[midIndex];
+    parent.numKeys++;
+}
+```
+
+### **Remoção**
+**Operação mais complexa:**
+
+1. **Casos base**: remoção de folha
+2. **Merge**: juntar nós com poucos elementos
+3. **Borrow**: "emprestar" de irmão com elementos extras
+4. **Manter propriedades** de ordem mínima
+
+---
+
+## Análise de Complexidade
+
+### **Complexidades Temporais**
+
+| Operação | Complexidade | Observação |
+|----------|--------------|------------|
+| **Busca** | O(log_M n) | Altura logarítmica |
+| **Inserção** | O(log_M n) | Pode causar splits |
+| **Remoção** | O(log_M n) | Pode causar merges |
+
+### **Altura da Árvore**
+- **Altura máxima**: log_⌈M/2⌉(n)
+- **Muito menor** que árvore binária: log_2(n)
+- **Exemplo**: M=100, n=1.000.000
+  - B-Tree: altura ≈ 3
+  - BST: altura ≈ 20
+
+---
+
+## Aplicações Práticas
+
+### **Sistemas de Banco de Dados**
+- **Índices primários e secundários**
+- PostgreSQL, MySQL, Oracle utilizam B+ Trees
+- **Páginas de disco** mapeadas para nós da árvore
+
+### **Sistemas de Arquivos**
+- **HFS+** (Mac), **NTFS** (Windows)
+- Organização eficiente de diretórios
+- **Metadados** armazenados em B-Trees
+
+### **Motores de Busca**
+- **Índices invertidos** para texto
+- Busca rápida por termos
+- **Compressão** e otimização de espaço
+
+---
+
+## B-Tree vs Outras Estruturas
+
+| Característica | B-Tree | BST | AVL | Hash |
+|----------------|--------|-----|-----|------|
+| **Altura** | log_M n | log n* | log n | O(1)* |
+| **Acessos disco** | Poucos | Muitos | Muitos | Poucos |
+| **Busca ordenada** | ✅ | ✅ | ✅ | ❌ |
+| **Range queries** | ✅ | ✅ | ✅ | ❌ |
+| **Memória sec.** | ✅ | ❌ | ❌ | ✅ |
+
+*Condições ideais
+
+---
+
+## Variações Importantes
+
+### **B+ Tree**
+- **Todas as chaves** nas folhas
+- **Nós internos** apenas para navegação
+- **Lista ligada** entre folhas → range queries eficientes
+
+### **B* Tree**
+- **Nodes 2/3 cheios** (ao invés de 1/2)
+- **Maior utilização** de espaço
+- **Menos splits** durante inserção
+
+---
+
+## Questões para Prova
+
+### **1. Por que B-Trees foram criadas?**
+**R:** Para otimizar acesso a dados em memória secundária (discos), reduzindo o número de operações de I/O através de nós maiores que diminuem a altura da árvore.
+
+### **2. Qual a principal diferença entre B-Tree e BST?**
+**R:** B-Trees têm nós com múltiplas chaves (M-1) e filhos (M), resultando em árvores mais largas e baixas. BSTs têm no máximo 2 filhos por nó.
+
+### **3. O que acontece quando um nó fica cheio durante inserção?**
+**R:** Ocorre um split: o nó é dividido em dois, a chave do meio é promovida para o pai, e o processo pode se propagar até a raiz.
+
+### **4. Por que a altura é O(log_M n)?**
+**R:** Cada nó tem entre ⌈M/2⌉ e M filhos, garantindo que a árvore seja balanceada com altura logarítmica na base M, que é maior que 2.
+
+---
+
+## Exemplo Prático
+
+### **Inserção em B-Tree de Ordem 3 (máximo 2 chaves):**
+
+**Sequência**: 10, 20, 5, 6, 12, 30, 7, 17
+
+1. **Inserir 10**: `[10]`
+2. **Inserir 20**: `[10, 20]`
+3. **Inserir 5**: `[5, 10, 20]` → **SPLIT!**
+   ```
+      [10]
+     /    \
+   [5]    [20]
+   ```
+4. **Inserir 6**: `[5, 6]` e `[20]`
+5. **Inserir 12**: `[5, 6]` e `[12, 20]`
+6. **Inserir 30**: `[5, 6]` e `[12, 20, 30]` → **SPLIT!**
+   ```
+       [10, 20]
+      /    |    \
+    [5,6] [12] [30]
+   ```
+
+**Resultado**: Árvore balanceada com altura mínima para os dados inseridos.
+
+---
+
+*Material de estudo para EDA-LEDA | UFCG*
 
 Um nó interno com 
 

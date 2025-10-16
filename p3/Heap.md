@@ -1,52 +1,269 @@
-## Heap
+# Heap - Filas de Prioridade
 
-#### 1. O Problema: Filas de Prioridade com Listas/Arrays
+## O Problema: Limitações das Estruturas Lineares
 
-Ao implementar uma fila de prioridade com estruturas lineares, enfrentamos um dilema de eficiência:
-*   Lista Ordenada:   A inserção é lenta (`O(n)`) porque precisa encontrar a posição correta, mas a remoção do elemento de maior prioridade é rápida (`O(1)`).
-*   Lista Desordenada:   A inserção é rápida (`O(1)`), mas a remoção é lenta (`O(n)`) porque exige uma busca por toda a lista para encontrar o elemento de maior prioridade.
+Ao implementar filas de prioridade com estruturas lineares, enfrentamos um **dilema de eficiência**:
 
-O Heap resolve esse problema, oferecendo tanto a inserção quanto a remoção em tempo `O(log n)`.
+| Estrutura | Inserção | Remoção do Máximo |
+|-----------|----------|-------------------|
+| **Lista Ordenada** | `O(n)` - lenta | `O(1)` - rápida |
+| **Lista Desordenada** | `O(1)` - rápida | `O(n)` - lenta |
 
-#### 2. Definições e Propriedades Fundamentais do Heap
+### **A Solução: Heap**
+O Heap resolve esse problema oferecendo **inserção e remoção em `O(log n)`** - eficiente para ambas as operações!
 
-Um Heap é uma árvore binária que obedece a duas propriedades essenciais:
+---
 
-1.    Propriedade de Ordem do Heap (Heap Property):  
-    * Em um   Heap Máximo   (foco do artigo), o valor de um nó é sempre   maior ou igual   ao valor de seus filhos. Isso garante que o maior elemento da estrutura esteja sempre na raiz.
-    * Em um   Heap Mínimo  , a regra é inversa: o valor de um nó é sempre menor ou igual ao de seus filhos.
+## Definições e Propriedades Fundamentais
 
-2.    Propriedade da Forma (Shape Property):  
-    * O Heap deve ser uma   árvore binária completa ou quase-completa  , com os nós do último nível preenchidos da esquerda para a direita, sem "buracos".
-    *   Importância:   Essa propriedade garante que a altura da árvore (`h`) seja sempre a mínima possível, ou seja, `O(log n)`. É essa característica que fundamenta a eficiência das suas operações.
+Um **Heap** é uma árvore binária que obedece a **duas propriedades essenciais**:
 
-#### 3. Implementação com Array
+### **Propriedade de Ordem (Heap Property)**
 
-Diferente de outras árvores que usam nós e ponteiros, o Heap é elegantemente implementado com um   array  . Isso é possível graças à sua propriedade de ser uma árvore completa ou quase-completa.
+#### **Max Heap** (Foco Principal)
+- Valor de um nó é sempre **≥** aos valores de seus filhos
+- **Garantia**: O maior elemento está sempre na **raiz**
 
-*   Mapeamento:   A árvore é representada no array através de um percurso em largura. A raiz fica no índice `0`, seus filhos nos índices `1` e `2`, os nós do próximo nível nos índices `3, 4, 5, 6`, e assim por diante.
-*   Navegação por Fórmulas:   A navegação (pai, filho esquerdo, filho direito) é feita matematicamente a partir de um índice `i`:
-    *   Pai:   `(i - 1) / 2`
-    *   Filho Esquerdo:   `2 * i + 1`
-    *   Filho Direito:   `2 * (i + 1)`
+#### **Min Heap**  
+- Valor de um nó é sempre **≤** aos valores de seus filhos
+- **Garantia**: O menor elemento está sempre na **raiz**
 
-#### 4. Operações Principais
+### **Propriedade da Forma (Shape Property)**
+- Heap deve ser uma **árvore binária completa ou quase-completa**
+- Nós do último nível preenchidos **da esquerda para direita**
+- **Sem "buracos"** na estrutura
 
-  a) Inserção (`add`) - Complexidade `O(log n)`  
+#### **Importância da Shape Property**
+- Garante altura mínima possível: `h = O(log n)`
+- Fundamenta a eficiência das operações
+- Permite implementação elegante com array
 
-O processo, conhecido como   sift-up   ou "subir", segue dois passos:
-1.  O novo elemento é adicionado na primeira posição livre do array (índice `tail + 1`), garantindo a propriedade da forma.
-2.  Para restaurar a propriedade de ordem, o novo elemento é comparado com seu pai. Se for maior, eles trocam de lugar. Esse processo se repete, "subindo" o elemento na árvore, até que ele seja menor que seu pai ou chegue à raiz.
+---
 
-  b) Remoção (`remove` ou `extractMax`) - Complexidade `O(log n)`  
+## Implementação com Array
 
-A remoção em um Heap sempre retira o elemento de maior prioridade, ou seja, a   raiz  . O processo envolve uma rotina crucial chamada   heapify  :
-1.  O valor da raiz (o máximo) é salvo para ser retornado.
-2.  O   último elemento   do heap (no índice `tail`) é movido para a posição da raiz (índice `0`).
-3.  O tamanho do heap é decrementado (`tail--`).
-4.  A propriedade de ordem é restaurada através do   heapify   (ou   sift-down   / "descer") a partir da nova raiz:
-    * O nó é comparado com seus filhos. Se for menor que um deles, é trocado pelo   maior dos filhos  .
-    * Esse processo de "descer" continua recursivamente até que o nó seja maior que ambos os filhos ou se torne uma folha.
+### **Mapeamento**
+Diferente de outras árvores, o Heap usa um **array** graças à propriedade de ser completo/quase-completo.
+
+```
+Árvore:       1
+            /   \
+           3     2  
+          / \   /
+         7   8 4
+
+Array: [1, 3, 2, 7, 8, 4]
+Index:  0  1  2  3  4  5
+```
+
+### **Navegação por Fórmulas**
+Para um nó no índice `i`:
+
+| Relação | Fórmula |
+|---------|---------|
+| **Pai** | `(i - 1) / 2` |
+| **Filho Esquerdo** | `2 * i + 1` |
+| **Filho Direito** | `2 * (i + 1)` ou `2 * i + 2` |
+
+---
+
+## Operações Principais
+
+### **Inserção (`add`) - O(log n)**
+
+#### **Processo: Sift-Up ("Subir")**
+
+1. **Adicionar**: Novo elemento na primeira posição livre (`tail + 1`)
+2. **Comparar**: Com o pai
+3. **Trocar**: Se filho > pai (em Max Heap)
+4. **Repetir**: Até elemento < pai ou chegar à raiz
+
+```java
+public void add(int element) {
+    heap[++tail] = element;  // Adiciona no final
+    shiftUp(tail);            // Restaura propriedade de ordem
+}
+
+private void shiftUp(int index) {
+    while (index > 0) {
+        int parentIndex = (index - 1) / 2;
+        if (heap[index] <= heap[parentIndex]) break;
+        
+        swap(index, parentIndex);
+        index = parentIndex;
+    }
+}
+```
+
+### **Remoção (`remove/extractMax`) - O(log n)**
+
+#### **Processo: Heapify ("Descer")**
+
+1. **Salvar**: Valor da raiz (máximo) para retorno  
+2. **Mover**: Último elemento para posição da raiz
+3. **Decrementar**: Tamanho (`tail--`)
+4. **Heapify**: Restaurar propriedade a partir da raiz
+
+```java
+public int extractMax() {
+    int max = heap[0];           // Salva máximo
+    heap[0] = heap[tail--];      // Move último para raiz
+    heapify(0);                  // Restaura propriedade
+    return max;
+}
+
+private void heapify(int index) {
+    while (true) {
+        int largest = index;
+        int left = 2 * index + 1;
+        int right = 2 * index + 2;
+        
+        if (left <= tail && heap[left] > heap[largest])
+            largest = left;
+        if (right <= tail && heap[right] > heap[largest])
+            largest = right;
+            
+        if (largest == index) break;
+        
+        swap(index, largest);
+        index = largest;
+    }
+}
+```
+
+---
+
+## Build Heap - Construção Eficiente
+
+### **Problema**: Criar heap a partir de array desordenado
+
+### **Solução**: Build Heap em `O(n)`
+
+```java
+public void buildHeap(int[] array) {
+    this.heap = array;
+    this.tail = array.length - 1;
+    
+    // Heapify de baixo para cima, começando do último pai
+    for (int i = (tail - 1) / 2; i >= 0; i--) {
+        heapify(i);
+    }
+}
+```
+
+#### **Por que O(n)?**
+- Nós nas folhas: não precisam de heapify
+- Nós próximos às folhas: pouco trabalho
+- Apenas poucos nós (próximos à raiz) fazem trabalho significativo
+
+---
+
+## Aplicações Práticas
+
+### **HeapSort - O(n log n)**
+```java
+public void heapSort(int[] array) {
+    buildHeap(array);              // O(n)
+    
+    for (int i = tail; i > 0; i--) {
+        swap(0, i);                // Move max para posição final
+        tail--;                    // Reduz heap
+        heapify(0);               // Restaura propriedade
+    }
+}
+```
+
+### **Fila de Prioridade**
+```java
+public class PriorityQueue {
+    private Heap heap = new Heap();
+    
+    public void enqueue(int element) { heap.add(element); }
+    public int dequeue() { return heap.extractMax(); }
+    public int peek() { return heap.getRoot(); }
+    public boolean isEmpty() { return heap.isEmpty(); }
+}
+```
+
+### **Top K Elementos**
+```java
+public int[] topKElements(int[] array, int k) {
+    Heap heap = new Heap();
+    
+    for (int element : array) {
+        heap.add(element);
+    }
+    
+    int[] result = new int[k];
+    for (int i = 0; i < k; i++) {
+        result[i] = heap.extractMax();
+    }
+    
+    return result;
+}
+```
+
+---
+
+## Complexidades
+
+| Operação | Complexidade | Observação |
+|----------|--------------|------------|
+| **Inserção** | `O(log n)` | Sift-up até raiz |
+| **Remoção** | `O(log n)` | Heapify até folhas |
+| **Build Heap** | `O(n)` | Construção bottom-up |
+| **HeapSort** | `O(n log n)` | Build + n remoções |
+| **Busca** | `O(n)` | Sem ordem entre irmãos |
+
+---
+
+## Heap vs Outras Estruturas
+
+| Estrutura | Inserção | Remoção Max | Busca | Uso Ideal |
+|-----------|----------|-------------|-------|-----------|
+| **Heap** | `O(log n)` | `O(log n)` | `O(n)` | Fila de prioridade |
+| **BST** | `O(log n)` | `O(log n)` | `O(log n)` | Busca frequente |
+| **Lista Ord.** | `O(n)` | `O(1)` | `O(n)` | Remoção constante |
+| **Array Ord.** | `O(n)` | `O(1)` | `O(log n)` | Dados estáticos |
+
+---
+
+## Exemplo Prático
+
+### **Construindo Heap: [4, 10, 3, 5, 1]**
+
+#### **Inserções Passo a Passo:**
+
+1. **Inserir 4**: `[4]`
+2. **Inserir 10**: `[10, 4]` (10 sobe)
+3. **Inserir 3**: `[10, 4, 3]`
+4. **Inserir 5**: `[10, 5, 3, 4]` (5 sobe)
+5. **Inserir 1**: `[10, 5, 3, 4, 1]`
+
+#### **Estrutura Final:**
+```
+     10
+   /    \
+  5      3
+ / \
+4   1
+```
+
+#### **Remoção do Máximo:**
+1. **Remove 10**: Move 1 para raiz → `[1, 5, 3, 4]`
+2. **Heapify**: 1 desce → `[5, 4, 3, 1]`
+
+```
+     5
+   /   \
+  4     3
+ /
+1
+```
+
+---
+
+*Material de estudo para EDA-LEDA | UFCG*
 
   c) Construção de um Heap (`buildHeap`)  
 

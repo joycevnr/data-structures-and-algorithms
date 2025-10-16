@@ -1,7 +1,9 @@
-## **As Três Travessias Clássicas**
+# Travessias de Árvores
+
+## As Três Travessias Clássicas (DFS)
 
 ### **1. In-Order (Em-Ordem)**
-**Ordem:** Esquerda → Raiz → Direita
+**Ordem:** Esquerda → **Raiz** → Direita
 
 ```java
 public void inOrder() {
@@ -18,6 +20,300 @@ private void inOrder(Node node) {
 ```
 
 **Resultado em BST:** Os elementos aparecem em **ordem crescente**!
+
+---
+
+### **2. Pre-Order (Pré-Ordem)**  
+**Ordem:** **Raiz** → Esquerda → Direita
+
+```java
+public void preOrder() {
+    preOrder(this.root);
+}
+
+private void preOrder(Node node) {
+    if (node != null) {
+        System.out.println(node.value); // 1. Processa o nó atual
+        preOrder(node.left);           // 2. Visita subárvore esquerda
+        preOrder(node.right);          // 3. Visita subárvore direita
+    }
+}
+```
+
+**Uso:** Copiar/clonar árvores, análise de expressões
+
+---
+
+### **3. Post-Order (Pós-Ordem)**
+**Ordem:** Esquerda → Direita → **Raiz**
+
+```java
+public void postOrder() {
+    postOrder(this.root);
+}
+
+private void postOrder(Node node) {
+    if (node != null) {
+        postOrder(node.left);          // 1. Visita subárvore esquerda
+        postOrder(node.right);         // 2. Visita subárvore direita
+        System.out.println(node.value);  // 3. Processa o nó atual
+    }
+}
+```
+
+**Uso:** Deletar árvores, calcular tamanho, liberação de memória
+
+---
+
+## Travessia em Largura (BFS)
+
+### **Level-Order (Por Nível)**
+**Estratégia:** Visita todos nós de um nível antes de passar ao próximo
+
+```java
+public void levelOrder() {
+    if (root == null) return;
+    
+    Queue<Node> fila = new LinkedList<>();
+    fila.add(root);
+    
+    while (!fila.isEmpty()) {
+        Node atual = fila.poll();
+        System.out.println(atual.value);
+        
+        // Adiciona filhos na fila (esquerda primeiro)
+        if (atual.left != null) fila.add(atual.left);
+        if (atual.right != null) fila.add(atual.right);
+    }
+}
+```
+
+**Uso:** Busca por nível, impressão por níveis, algoritmos de caminho mínimo
+
+---
+
+## Exemplo Visual Completo
+
+### **Árvore de Exemplo:**
+```
+       4
+     /   \
+    2     6
+   / \   / \
+  1   3 5   7
+```
+
+### **Resultados das Travessias:**
+
+| Travessia | Resultado | Característica |
+|-----------|-----------|----------------|
+| **In-Order** | `1, 2, 3, 4, 5, 6, 7` | Ordem crescente (BST) |
+| **Pre-Order** | `4, 2, 1, 3, 6, 5, 7` | Raiz primeiro |
+| **Post-Order** | `1, 3, 2, 5, 7, 6, 4` | Raiz último |
+| **Level-Order** | `4, 2, 6, 1, 3, 5, 7` | Nível por nível |
+
+---
+
+## Implementações Avançadas
+
+### **1. Travessia Iterativa (In-Order)**
+```java
+public void inOrderIterative() {
+    Stack<Node> stack = new Stack<>();
+    Node atual = root;
+    
+    while (atual != null || !stack.isEmpty()) {
+        // Vai para o nó mais à esquerda
+        while (atual != null) {
+            stack.push(atual);
+            atual = atual.left;
+        }
+        
+        // Processa nó atual
+        atual = stack.pop();
+        System.out.println(atual.value);
+        
+        // Move para subárvore direita
+        atual = atual.right;
+    }
+}
+```
+
+### **2. BFS com Separação por Níveis**
+```java
+public void levelOrderWithLevels() {
+    if (root == null) return;
+    
+    Queue<Node> fila = new LinkedList<>();
+    fila.add(root);
+    
+    while (!fila.isEmpty()) {
+        int nivelSize = fila.size();
+        
+        // Processa todos nós do nível atual
+        for (int i = 0; i < nivelSize; i++) {
+            Node atual = fila.poll();
+            System.out.print(atual.value + " ");
+            
+            if (atual.left != null) fila.add(atual.left);
+            if (atual.right != null) fila.add(atual.right);
+        }
+        System.out.println(); // Nova linha para próximo nível
+    }
+}
+```
+
+### **3. Travessia com Retorno de Lista**
+```java
+public List<Integer> inOrderList() {
+    List<Integer> result = new ArrayList<>();
+    inOrderList(root, result);
+    return result;
+}
+
+private void inOrderList(Node node, List<Integer> result) {
+    if (node != null) {
+        inOrderList(node.left, result);
+        result.add(node.value);
+        inOrderList(node.right, result);
+    }
+}
+```
+
+---
+
+## Aplicações Práticas
+
+### **Análise e Processamento**
+- **In-Order**: Obter elementos ordenados de BST
+- **Pre-Order**: Serialização/clonagem de árvores
+- **Post-Order**: Calcular altura, tamanho, deletar árvore
+- **Level-Order**: Impressão por níveis, busca por amplitude
+
+### **Algoritmos de Busca**
+```java
+// Busca DFS (Pre-Order)
+public boolean searchDFS(int target) {
+    return searchDFS(root, target);
+}
+
+private boolean searchDFS(Node node, int target) {
+    if (node == null) return false;
+    if (node.value == target) return true;
+    
+    return searchDFS(node.left, target) || 
+           searchDFS(node.right, target);
+}
+
+// Busca BFS
+public boolean searchBFS(int target) {
+    if (root == null) return false;
+    
+    Queue<Node> fila = new LinkedList<>();
+    fila.add(root);
+    
+    while (!fila.isEmpty()) {
+        Node atual = fila.poll();
+        if (atual.value == target) return true;
+        
+        if (atual.left != null) fila.add(atual.left);
+        if (atual.right != null) fila.add(atual.right);
+    }
+    
+    return false;
+}
+```
+
+---
+
+## Complexidades
+
+| Travessia | Tempo | Espaço | Observações |
+|-----------|-------|---------|-------------|
+| **DFS (Recursiva)** | `O(n)` | `O(h)` | h = altura da árvore |
+| **DFS (Iterativa)** | `O(n)` | `O(h)` | Usa stack explícita |
+| **BFS** | `O(n)` | `O(w)` | w = largura máxima |
+
+**Onde:**
+- `n` = número de nós
+- `h` = altura da árvore (log n para balanceada, n para degenerada)
+- `w` = largura máxima (máximo de nós em um nível)
+
+---
+
+## Exercícios e Padrões
+
+### **1. Validação de BST (In-Order)**
+```java
+public boolean isValidBST() {
+    List<Integer> inorder = inOrderList();
+    for (int i = 1; i < inorder.size(); i++) {
+        if (inorder.get(i) <= inorder.get(i-1)) return false;
+    }
+    return true;
+}
+```
+
+### **2. Soma de Caminhos (DFS)**
+```java
+public int sumPaths(Node node, int targetSum) {
+    if (node == null) return 0;
+    
+    int count = 0;
+    if (node.value == targetSum) count = 1;
+    
+    count += sumPaths(node.left, targetSum - node.value);
+    count += sumPaths(node.right, targetSum - node.value);
+    
+    return count;
+}
+```
+
+### **3. Encontrar Nível de um Nó (BFS)**
+```java
+public int findLevel(int target) {
+    if (root == null) return -1;
+    
+    Queue<Node> fila = new LinkedList<>();
+    fila.add(root);
+    int nivel = 0;
+    
+    while (!fila.isEmpty()) {
+        int size = fila.size();
+        
+        for (int i = 0; i < size; i++) {
+            Node atual = fila.poll();
+            if (atual.value == target) return nivel;
+            
+            if (atual.left != null) fila.add(atual.left);
+            if (atual.right != null) fila.add(atual.right);
+        }
+        nivel++;
+    }
+    
+    return -1; // Não encontrado
+}
+```
+
+---
+
+## Provas
+
+### **Pontos Importantes**
+1. **In-Order em BST = Ordem Crescente**
+2. **BFS usa Fila, DFS usa Stack (ou recursão)**
+3. **Pre-Order: raiz primeiro, Post-Order: raiz último**
+4. **Level-Order processa nível completo por vez**
+
+### **Perguntas Comuns**
+- "Qual travessia retorna elementos ordenados em BST?" → **In-Order**
+- "Como imprimir árvore nível por nível?" → **Level-Order (BFS)**
+- "Como clonar uma árvore?" → **Pre-Order**
+- "Como calcular altura recursivamente?" → **Post-Order**
+
+---
+
+*Material de estudo para EDA-LEDA | UFCG*
 
 ### **2. Pre-Order (Pré-Ordem)**
 **Ordem:** Raiz → Esquerda → Direita

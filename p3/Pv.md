@@ -1,53 +1,280 @@
-### Parte 1: A Teoria Conceitual das Árvores Red-Black (PV)
+# Árvores Red-Black (Preto-Vermelho)
 
-#### O que é uma Árvore Red-Black?
+## O que é uma Árvore Red-Black?
 
- Uma Árvore Red-Black, ou Árvore Preto-Vermelho (PV), é um tipo especial de árvore binária de busca . Sua principal característica é que ela se auto-balanceia para garantir que as operações de busca, inserção e remoção sejam eficientes.  Para isso, cada nó armazena uma informação extra: uma cor (vermelho ou preto) .
+Uma **Árvore Red-Black (PV)** é um tipo especial de **árvore binária de busca auto-balanceada**. Sua característica distintiva é que **cada nó armazena uma cor adicional: vermelho ou preto**.
 
- O objetivo dessas cores e das regras associadas a elas é manter a árvore "aproximadamente balanceada" .  Isso significa que o caminho mais longo da raiz até uma folha nunca será mais que o dobro do caminho mais curto, o que garante a complexidade de tempo das operações em $O(\log n)$ .
-
-#### As Propriedades (Invariantes)
-
- Para que uma árvore seja considerada uma Red-Black válida, ela deve obedecer a 5 regras fundamentais, também chamadas de invariantes :
-
-1.     Propriedade da Cor:   Todo nó é vermelho ou preto .
-2.     Propriedade da Raiz:   O nó raiz é sempre preto .
-3.     Propriedade da Folha:   Toda folha (representada como NIL ou `null`) é preta .
-4.     Propriedade do Nó Vermelho:   Se um nó é vermelho, então ambos os seus filhos são pretos . (Isso impede que existam dois nós vermelhos em sequência).
-5.     Propriedade da Altura Preta:   Para cada nó, todos os caminhos simples que partem dele até qualquer uma de suas folhas descendentes contêm o mesmo número de nós pretos .
-
-#### Altura Preta (Black-Height)
-
- A "altura preta" (ou *black-height*) de um nó é o número de nós pretos em qualquer caminho simples a partir daquele nó até uma folha (sem contar o próprio nó) . A propriedade 5 garante que esse número seja o mesmo para todos os caminhos.  A altura preta da árvore inteira é a altura preta de sua raiz .
+### **Objetivo das Cores**
+- Manter a árvore **"aproximadamente balanceada"**
+- Garantir que o **caminho mais longo** nunca seja mais que o **dobro do caminho mais curto**
+- Assegurar complexidade **O(log n)** para todas as operações
 
 ---
 
-### Parte 2: Perguntas e Respostas para a Prova
+## As 5 Propriedades Fundamentais (Invariantes)
 
-Aqui estão as perguntas e respostas focadas nos conceitos e nos tópicos que seu professor indicou.
+Para que uma árvore seja uma **Red-Black válida**, deve obedecer a **5 regras fundamentais**:
 
-####   Pergunta 1: O que é uma Árvore Red-Black (PV) e qual seu principal objetivo?  
+### **Propriedade da Cor**
+> Todo nó é **vermelho** ou **preto**
 
-  Resposta:  
- É uma árvore binária de busca onde cada nó possui uma cor (vermelho ou preto) .  Seu principal objetivo é manter-se aproximadamente balanceada através de um conjunto de regras (invariantes) .  Esse balanceamento garante que operações como busca, inserção e remoção sejam executadas em tempo logarítmico ($O(\log n)$) .
+### **Propriedade da Raiz**  
+> O nó **raiz** é sempre **preto**
+
+### **Propriedade da Folha**
+> Toda **folha** (representada como NIL ou `null`) é **preta**
+
+### **Propriedade do Nó Vermelho**
+> Se um nó é **vermelho**, então **ambos os seus filhos são pretos**
+> 
+> *(Impede dois nós vermelhos consecutivos)*
+
+### **Propriedade da Altura Preta**
+> Para cada nó, **todos os caminhos** até suas folhas descendentes contêm o **mesmo número de nós pretos**
 
 ---
 
-####   Pergunta 2: (Tópico do Professor) Dada uma árvore binária de busca com nós pretos e vermelhos, como verificar se ela é uma Árvore Red-Black válida?  
+## Altura Preta (Black-Height)
 
-  Resposta:  
-Para verificar se a árvore é uma PV válida, é preciso checar se todas as 5 propriedades são satisfeitas. O processo seria:
-1.     Verificar a Raiz:   Checar se a cor do nó raiz é preta .
-2.     Verificar os Nós Vermelhos:   Percorrer a árvore e, para cada nó vermelho, verificar se seus dois filhos são pretos . Se encontrar um nó vermelho com um filho vermelho, a árvore é inválida.
-3.    Verificar a Altura Preta:   Esta é a verificação mais complexa. Começando da raiz, é preciso calcular a altura preta para a subárvore esquerda e a subárvore direita. Se em qualquer nó da árvore a altura preta dos seus dois filhos for diferente, a árvore é inválida. Esse processo deve ser feito recursivamente para todos os nós.  Todos os caminhos de um nó até suas folhas descendentes devem ter o mesmo número de nós pretos .
-4.     Considerar Folhas:   Durante a verificação, os nós `null` (folhas) são sempre considerados pretos .
+### **Definição**
+A **altura preta** de um nó é o **número de nós pretos** em qualquer caminho simples até uma folha (sem contar o próprio nó).
 
-Se a árvore passar em todas essas verificações, ela é uma Árvore Red-Black válida.
+### **Importância**
+- **Propriedade 5** garante que esse número seja igual para todos os caminhos
+- A **altura preta da árvore** = altura preta da raiz
+- Fundamenta a garantia de balanceamento
+
+### **Exemplo Visual**
+```
+       B(5)     ← altura preta = 2
+      /    \
+   R(3)    B(8)  ← altura preta = 1
+   /  \    /  \
+ B(1) B(4) NIL NIL ← altura preta = 0
+```
 
 ---
 
-####   Pergunta 3: (Tópico do Professor) Dada uma PV, como se determina a sua altura preta?  
+## Questões Fundamentais para Prova
 
+### **1. O que é uma Árvore Red-Black e qual seu objetivo?**
+
+**Resposta:**
+É uma **árvore binária de busca** onde cada nó possui uma **cor (vermelho ou preto)**. Seu objetivo é **manter-se aproximadamente balanceada** através de um conjunto de **regras (invariantes)**, garantindo operações em tempo **O(log n)**.
+
+---
+
+### **2. Como verificar se uma árvore é Red-Black válida?**
+
+**Resposta:**
+Verificar se **todas as 5 propriedades** são satisfeitas:
+
+1. **✅ Verificar a Raiz**: Cor da raiz = preta
+2. **🔍 Verificar Nós Vermelhos**: Para cada nó vermelho, ambos filhos são pretos
+3. **📏 Verificar Altura Preta**: Calcular recursivamente - todos caminhos de qualquer nó até folhas devem ter o mesmo número de nós pretos
+4. **🍃 Considerar Folhas**: Nós `null` são sempre pretos
+
+```java
+public boolean isValidRedBlack(Node node) {
+    // Verificação da raiz
+    if (root.color != BLACK) return false;
+    
+    // Verificação recursiva
+    return checkRedBlackProperties(root) != -1;
+}
+
+private int checkRedBlackProperties(Node node) {
+    // Folha (NIL) - altura preta = 0
+    if (node == null) return 0;
+    
+    // Verifica propriedade do nó vermelho
+    if (node.color == RED) {
+        if ((node.left != null && node.left.color == RED) ||
+            (node.right != null && node.right.color == RED)) {
+            return -1; // Violação: vermelho com filho vermelho
+        }
+    }
+    
+    // Calcula altura preta recursivamente
+    int leftHeight = checkRedBlackProperties(node.left);
+    int rightHeight = checkRedBlackProperties(node.right);
+    
+    // Se alguma subárvore é inválida
+    if (leftHeight == -1 || rightHeight == -1) return -1;
+    
+    // Verifica se altura preta é igual
+    if (leftHeight != rightHeight) return -1;
+    
+    // Retorna altura preta + 1 se nó atual é preto
+    return leftHeight + (node.color == BLACK ? 1 : 0);
+}
+```
+
+---
+
+### **3. Como determinar a altura preta de uma PV?**
+
+**Resposta:**
+A **altura preta** é determinada contando os **nós pretos** em qualquer caminho da raiz até uma folha (excluindo a raiz):
+
+```java
+public int blackHeight(Node node) {
+    if (node == null) return 0;
+    
+    // Escolhe qualquer caminho (esquerda por convenção)
+    int height = blackHeight(node.left);
+    
+    // Adiciona 1 se o nó atual é preto
+    return height + (node.color == BLACK ? 1 : 0);
+}
+```
+
+**📝 Processo:**
+1. Começar da raiz
+2. Seguir qualquer caminho até folha
+3. Contar apenas nós pretos
+4. Propriedade 5 garante que todos caminhos têm a mesma contagem
+
+---
+
+### **4. Qual a relação entre altura da árvore e altura preta?**
+
+**Resposta:**
+- **Altura total** ≤ **2 × altura preta**
+- **Demonstração**: No pior caso, alternamos nós vermelhos e pretos
+- **Exemplo**: altura preta = 3 → altura total ≤ 6
+
+```
+Caminho alternado máximo:
+B → R → B → R → B → R → NIL
+(3 pretos, altura total = 6)
+```
+
+---
+
+### **5. Por que nós vermelhos não podem ter filhos vermelhos?**
+
+**Resposta:**
+- **Evita desbalanceamento excessivo**
+- **Controla altura máxima** da árvore
+- **Garante** que altura ≤ 2 × altura preta
+- **Simplifica algoritmos** de inserção e remoção
+
+---
+
+## Operações de Balanceamento
+
+### **Recoloração**
+Mudança de cores para restaurar propriedades:
+```java
+private void recolor(Node node) {
+    node.color = BLACK;
+    node.parent.color = RED;
+    getUncle(node).color = BLACK;
+}
+```
+
+### **Rotações**
+Reestruturação física da árvore:
+```java
+private void rotateLeft(Node node) {
+    Node newRoot = node.right;
+    node.right = newRoot.left;
+    newRoot.left = node;
+    
+    // Atualizar cores conforme casos específicos
+    updateColorsAfterRotation(node, newRoot);
+}
+```
+
+---
+
+## Casos de Inserção
+
+### **Caso 1: Pai é Preto**
+- **Ação**: Nenhuma (propriedades mantidas)
+
+### **Caso 2: Pai e Tio são Vermelhos**
+- **Ação**: Recoloração (pai e tio → preto, avô → vermelho)
+
+### **Caso 3: Pai Vermelho, Tio Preto**
+- **Ação**: Rotação + recoloração baseada na configuração
+
+---
+
+## Complexidades Garantidas
+
+| Operação | Complexidade | Observação |
+|----------|--------------|------------|
+| **Busca** | O(log n) | Altura limitada |
+| **Inserção** | O(log n) | + rebalanceamento |
+| **Remoção** | O(log n) | + rebalanceamento |
+| **Altura máxima** | 2 × log(n+1) | Prova matemática |
+
+---
+
+## Red-Black vs AVL
+
+| Característica | Red-Black | AVL |
+|----------------|-----------|-----|
+| **Balanceamento** | Aproximado | Rigoroso |
+| **Altura máxima** | 2 × log n | 1.44 × log n |
+| **Rotações inserção** | ≤ 2 | ≤ 2 |
+| **Rotações remoção** | ≤ 3 | ≤ log n |
+| **Uso prático** | Bibliotecas | Busca intensiva |
+
+---
+
+## Aplicações Práticas
+
+### **Bibliotecas Padrão**
+- **C++ STL**: `std::map`, `std::set`
+- **Java**: `TreeMap`, `TreeSet`  
+- **Linux Kernel**: Scheduler, memory management
+
+### **Bancos de Dados**
+- **Índices secundários**
+- **Estruturas de cache**
+- **Otimização de consultas**
+
+---
+
+## Exemplo Prático de Verificação
+
+### **Árvore para Análise:**
+```
+       B(10)
+      /     \
+   R(5)     B(15)
+   /  \     /   \
+ B(3) B(7) R(12) R(20)
+```
+
+### **Verificação Passo a Passo:**
+
+1. **✅ Raiz preta**: 10 é preto ✓
+2. **✅ Nós vermelhos**: 5, 12, 20 têm filhos pretos ✓
+3. **Altura preta**:
+   - Caminho 10→5→3: 2 pretos
+   - Caminho 10→5→7: 2 pretos  
+   - Caminho 10→15→12: 2 pretos
+   - Caminho 10→15→20: 2 pretos ✓
+
+**Resultado**: Árvore Red-Black válida!
+
+---
+
+### **Estratégia de Verificação**
+1. Verificar raiz (propriedade 2)
+2. Percorrer árvore verificando nós vermelhos (propriedade 4)
+3. Calcular altura preta de todos caminhos (propriedade 5)
+4. Confirmar igualdade das alturas pretas
+
+---
+
+*Material de estudo para EDA-LEDA | UFCG*
+
+####  Dada uma PV, como se determina a sua altura preta?  
   Resposta:  
  A altura preta de uma Árvore Red-Black é a altura preta de seu nó raiz .  Para calcular a altura preta de um nó qualquer, basta contar o número de nós pretos em um caminho simples a partir dele até uma folha descendente (NIL) . Devido à propriedade 5, esse número será o mesmo para todos os caminhos.
 
