@@ -62,29 +62,6 @@ Algoritmos específicos e casos de teste:
 - `RotacaoAVL.java` - Sistema de rotações AVL
 - `VerificadorAVL.java` - Validação de propriedades
 
----
-
-## 🎯 Roadmap de Estudos
-
-### 📋 **Nível Básico**
-1. ✅ Conceitos de árvores binárias
-2. ✅ BST: inserção, busca, remoção
-3. ✅ Travessias DFS e BFS
-4. ✅ Análise de complexidade
-
-### 📋 **Nível Intermediário**  
-1. ✅ Problema do desbalanceamento
-2. ✅ Árvores AVL e rotações
-3. ✅ Heaps e filas de prioridade
-4. ✅ HeapSort
-
-### 📋 **Nível Avançado**
-1. ✅ Árvores Red-Black
-2. ✅ B-Trees para armazenamento
-3. ✅ Otimizações e variações
-4. ✅ Aplicações práticas
-
----
 
 ## 🔍 Principais Algoritmos
 
