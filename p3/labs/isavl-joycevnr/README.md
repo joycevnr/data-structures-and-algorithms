@@ -1,8 +1,6 @@
 # Identificação
 
-* Nome: Joyce Vitória Nascimento Rodrigues
-* Email (@ccc): joyce.vitoria.nascimento.rodrigues@ccc.ufcg.edu.br
-* Matrícula: 
+* Nome: Joyce Vitória
 
 # Roteiro: isAVL
 
