@@ -1,5 +1,4 @@
-##Aluna: Joyce Vitória Nascimento Rodrigues
-##Matrícula: 124110425
+##Aluna: Joyce Vitória
 # Roteiro aula
 
 * Discutir sobre experimentação

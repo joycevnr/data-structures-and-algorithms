@@ -1,8 +1,6 @@
 # Identificação
 
-* Nome: Joyce Vitória Nascimento Rodrigues
-* Email (@ccc): joyce.vitoria.nascimento.rodrigues@ccc.ufcg.edu.br
-* Matrícula: 124110425
+* Nome: Joyce Vitória
 
 # Roteiro: BST
 
